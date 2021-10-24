@@ -1,0 +1,51 @@
+.root {
+  padding: 15px 0;
+  background: white;
+  box-shadow: 0px 10px 63px rgba(0, 0, 0, 0.07);
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  color: var(--orange-bright);
+  transition: color 0.3s ease;
+}
+
+.logo:hover {
+  color: var(--orange-dark);
+}
+
+.logo:hover svg path {
+  transition: fill 0.3s ease;
+}
+
+.logo:hover svg path:first-of-type {
+  fill: var(--orange-dark);
+}
+
+.stats {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  color: var(--orange-bright);
+  transition: color 0.3s ease;
+}
+
+.stats:hover {
+  color: var(--orange-dark);
+}
+
+.stats svg * {
+  transition: fill 0.3s ease;
+}
+
+.stats:hover svg * {
+  fill: var(--orange-dark);
+}
