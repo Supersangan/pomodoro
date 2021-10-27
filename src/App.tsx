@@ -1,8 +1,9 @@
 import React from 'react';
 import { Header } from './Header';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Pomodoro } from './Pomodoro';
 import styles from './app.module.css';
+import { Stats } from './Stats';
 
 function App() {
   return (
@@ -11,7 +12,15 @@ function App() {
 
       <main className={styles.main}>
         <div className="container">
-          <Pomodoro />
+          <Switch>
+            <Route path="/stats">
+              <Stats />
+            </Route>
+
+            <Route path="/">
+              <Pomodoro />
+            </Route>
+          </Switch>
         </div>
       </main>
 

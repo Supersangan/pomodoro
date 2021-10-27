@@ -5,11 +5,11 @@ export function Form() {
   return (
     <form action="">
       <input
-        className={styles.input + ' input'}
+        className={`${styles.input} input`}
         type="text"
         placeholder="Название задачи"
       />
-      <button className={styles.button + ' button'}>Добавить</button>
+      <button className={`${styles.button} button`}>Добавить</button>
     </form>
   );
 }

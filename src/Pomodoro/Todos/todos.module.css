@@ -6,7 +6,7 @@
   font-weight: 700;
 }
 
-.list {
+.descriptionList {
   margin: 0;
   margin-bottom: 25px;
   padding: 0;
@@ -14,12 +14,12 @@
   list-style: none;
 }
 
-.li {
+.descriptionLi {
   position: relative;
   line-height: 33px;
 }
 
-.li::before {
+.descriptionLi::before {
   display: block;
   content: '';
   position: absolute;
@@ -29,4 +29,12 @@
   height: 5px;
   border-radius: 50%;
   background-color: var(--orange-dark);
+}
+
+.todosForm {
+  width: 370px;
+}
+
+.todosLlist {
+  width: 370px;
 }

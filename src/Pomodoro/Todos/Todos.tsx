@@ -8,22 +8,26 @@ export function Todos() {
     <div className={styles.root}>
       <h1 className={styles.heading}>Ура! Теперь можно начать работать:</h1>
 
-      <ul className={styles.list}>
-        <li className={styles.li}>
+      <ul className={styles.descriptionList}>
+        <li className={styles.descriptionLi}>
           Выберите категорию и напишите название текущей задачи
         </li>
-        <li className={styles.li}>Запустите таймер («помидор»)</li>
-        <li className={styles.li}>Работайте пока «помидор» не прозвонит</li>
-        <li className={styles.li}>Сделайте короткий перерыв (3-5 минут)</li>
-        <li className={styles.li}>
+        <li className={styles.descriptionLi}>Запустите таймер («помидор»)</li>
+        <li className={styles.descriptionLi}>Работайте пока «помидор» не прозвонит</li>
+        <li className={styles.descriptionLi}>Сделайте короткий перерыв (3-5 минут)</li>
+        <li className={styles.descriptionLi}>
           Продолжайте работать «помидор» за «помидором», пока задача не будут
           выполнена. Каждые 4 «помидора» делайте длинный перерыв (15-30 минут).
         </li>
       </ul>
 
-      <Form />
-      
-      <List />
+      <div className={styles.todosForm}>
+        <Form />
+      </div>
+
+      <div className={styles.todosLlist}>
+        <List />
+      </div>
     </div>
   );
 }
