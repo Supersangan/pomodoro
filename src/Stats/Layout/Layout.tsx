@@ -1,9 +1,12 @@
 import React from 'react';
-import { Banner } from './Banner';
+import { Banner, EBannerBgs } from './Banner';
 import { Daily } from './Daily';
 import { Infographic } from './Infographic';
 import styles from './layout.module.css';
 import { Pomodoros } from './Pomodoros';
+import { ReactComponent as IconFocus } from './iconFocus.svg';
+import { ReactComponent as IconClock } from './iconClock.svg';
+import { ReactComponent as IconStop } from './iconStop.svg';
 
 export function Layout() {
   return (
@@ -21,15 +24,30 @@ export function Layout() {
       </div>
 
       <div className={`${styles.banner} ${styles.gridItem}`}>
-        <Banner />
+        <Banner
+          title={'Фокус'}
+          icon={<IconFocus />}
+          text={'35%'}
+          bg={EBannerBgs.yellow}
+        />
       </div>
 
       <div className={`${styles.banner} ${styles.gridItem}`}>
-        <Banner />
+        <Banner
+          title={'Время на паузе'}
+          icon={<IconClock />}
+          text={'9м'}
+          bg={EBannerBgs.purple}
+        />
       </div>
 
       <div className={`${styles.banner} ${styles.gridItem}`}>
-        <Banner />
+        <Banner
+          title={'Остановки'}
+          icon={<IconStop />}
+          text={'3'}
+          bg={EBannerBgs.blue}
+        />
       </div>
     </div>
   );

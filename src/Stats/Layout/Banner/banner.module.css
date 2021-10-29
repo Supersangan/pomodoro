@@ -1,0 +1,32 @@
+.root {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px;
+}
+
+.root.root_yellow {
+  background-color: #ffdda9;
+}
+
+.root.root_purple {
+  background-color: #dfdcfe;
+}
+
+.root.root_blue {
+  background-color: #c5f1ff;
+}
+
+.heading {
+  display: block;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 33px;
+}
+
+.text {
+  font-size: 64px;
+  font-weight: 400;
+  line-height: 76px;
+}

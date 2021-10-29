@@ -1,0 +1,100 @@
+.root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.body {
+  display: flex;
+  flex-grow: 1;
+  position: relative;
+  background: var(--gray-f4);
+}
+
+.linesContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: stretch;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.lineWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.line {
+  height: 1px;
+  flex-grow: 1;
+  background-color: var(--gray-33);
+  opacity: 0.2;
+}
+
+.lineTitle {
+  width: 100px;
+  padding: 0 20px;
+  font-size: 12px;
+}
+
+.columns {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 32px;
+  padding: 0 56px;
+  width: calc(100% - 100px);
+}
+
+.column {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  height: 100%;
+  color: var(--font-light);
+}
+
+.column.column_active {
+  color: var(--orange-bright);
+}
+
+.columnValue {
+  align-self: end;
+  width: 100%;
+  background-color: var(--orange-light);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.columnValue:hover {
+  background-color: var(--orange);
+}
+
+.columnValue.columnValue_active {
+  background-color: var(--orange-bright);
+}
+
+.columnValue.columnValue_active:hover {
+  background-color: var(--orange);
+}
+
+.columnValue.columnValue_passive {
+  height: 1.5%;
+  background-color: var(--gray-c4);
+}
+
+.columnValue.columnValue_passive:hover {
+  background-color: var(--orange);
+}
+
+.footer {
+  padding: 11px 0;
+  font-size: 24px;
+  line-height: 29px;
+  background: var(--gray-e4);
+}
