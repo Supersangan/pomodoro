@@ -37,11 +37,15 @@
   line-height: 17px;
   border: none;
   background-color: white;
-  transition: background-color .3s ease;
+  transition: background-color 0.3s ease;
 }
 
 .liButton:hover {
   background-color: var(--gray-f4);
+}
+
+.liButton.liButton_passive {
+  cursor: default;
 }
 
 .liIcon {
@@ -50,4 +54,16 @@
   align-items: center;
   width: 20px;
   height: 20px;
+}
+
+.liButton * {
+  transition: fill 0.3s ease;
+}
+
+.liButton:hover * {
+  fill: var(--green-dark);
+}
+
+.liButton.liButton_passive * {
+  fill: var(--gray-c4);
 }

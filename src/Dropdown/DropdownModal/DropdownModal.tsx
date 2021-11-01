@@ -22,6 +22,16 @@ export function DropdownModal({
   const node = document.querySelector('#dropdownModal_root');
   const ref = useRef<HTMLDivElement>(null);
 
+  function handleClick(e: React.MouseEvent<HTMLInputElement>) {
+    const target = e.target as HTMLElement;
+
+    if (target.closest('button')?.dataset.notCloser) {
+      return;
+    } else {
+      setIsDropdownOpen(false);
+    }
+  }
+
   useEffect(() => {
     function handleClick(event: MouseEvent) {
       if (
@@ -47,7 +57,7 @@ export function DropdownModal({
       style={{ left: left, top: top, width: width }}
       ref={ref}
     >
-      <div className={styles.wrapper} onClick={() => setIsDropdownOpen(false)}>
+      <div className={styles.wrapper} onClick={handleClick}>
         {children}
       </div>
     </div>,

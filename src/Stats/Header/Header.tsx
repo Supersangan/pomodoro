@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './header.module.css';
 import { ReactComponent as IconArrow } from './iconArrow.svg';
-import { Dropdown } from '../../Pomodoro/Todos/List/Dropdown';
+import { Dropdown } from '../../Dropdown';
 
 export function Header() {
   return (

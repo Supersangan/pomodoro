@@ -6,7 +6,7 @@ import { ReactComponent as IconPomodoroFaced } from './iconPomodoroFaced.svg';
 export function Pomodoros() {
   return (
     <div className={styles.root}>
-      {/* <IconPomodoroFaced /> */}
+      <IconPomodoroFaced />
 
       <div className={styles.content}>
         <IconPomodoro /> x 2

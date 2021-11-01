@@ -44,7 +44,7 @@
   position: relative;
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: flex-end;
   gap: 32px;
   padding: 0 56px;
   width: calc(100% - 100px);
