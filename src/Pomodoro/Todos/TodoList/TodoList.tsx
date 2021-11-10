@@ -16,11 +16,13 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { TRootState } from '../../../store/reducer';
 import { actionSwapTodos } from '../../../store/todos/reducer';
+import { useTransition, animated } from 'react-spring';
 
 const TIME = 25;
 
 export function TodoList() {
-  const todos = useSelector<TRootState, ITodoProps[]>((state) => state?.todos) || [];
+  const todos =
+    useSelector<TRootState, ITodoProps[]>((state) => state?.todos) || [];
   const dispatch = useDispatch();
 
   const summaryCount = todos.reduce(
@@ -51,6 +53,13 @@ export function TodoList() {
     }
   }
 
+  const transition = useTransition(todos, {
+    initial: { x: 0, opacity: 1 },
+    from: { x: 200, opacity: 0 },
+    enter: { x: 0, opacity: 1 },
+    leave: { x: 200, opacity: 0 },
+  });
+
   return (
     <>
       <DndContext
@@ -63,9 +72,15 @@ export function TodoList() {
             items={todos.map((todo) => todo.id)}
             strategy={verticalListSortingStrategy}
           >
-            {todos.map((todo) => {
-              return <TodoItem key={todo.id} todo={todo} />;
-            })}
+            {transition((style, todo) =>
+              todo ? (
+                <animated.li style={style} className="item">
+                  <TodoItem key={todo.id} todo={todo} />
+                </animated.li>
+              ) : (
+                ''
+              )
+            )}
           </SortableContext>
         </ul>
       </DndContext>

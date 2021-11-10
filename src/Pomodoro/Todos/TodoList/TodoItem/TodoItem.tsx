@@ -76,7 +76,7 @@ export function TodoItem({ todo }: ITodoItemProps) {
   };
 
   return (
-    <li
+    <div
       className={styles.root}
       {...attributes}
       {...listeners}
@@ -125,6 +125,6 @@ export function TodoItem({ todo }: ITodoItemProps) {
           />
         </Dropdown>
       </div>
-    </li>
+    </div>
   );
 }

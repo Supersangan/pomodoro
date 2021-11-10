@@ -1,5 +1,5 @@
 import React from 'react';
-import { Unit } from '../Unit';
+import { Unit } from './Unit'; 
 import styles from './units.module.css';
 
 interface IUnitsProps {
