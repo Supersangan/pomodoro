@@ -3,7 +3,7 @@
   margin-bottom: -1px;
   border-width: 1px 0 1px 0;
   border-style: solid;
-  border-color: var(--gray-e4);
+  border-color: var(--gray-90-inv);
 }
 
 .number {
@@ -14,9 +14,9 @@
   margin-right: 10px;
   width: 25px;
   height: 25px;
-  border: 1px solid var(--gray-c4);
+  border: 1px solid var(--gray-77-inv);
   border-radius: 50%;
-  background-color: white;
+  background-color: var(--bg-main-inv);
 }
 
 .heading {
@@ -27,7 +27,7 @@
 .input {
   margin: -6px;
   padding: 4px;
-  background: var(--gray-f4);
+  background: var(--gray-90-inv);
 }
 
 .button {
@@ -43,7 +43,7 @@
 }
 
 .root:hover .button {
-  background-color: var(--gray-f4);
+  background-color: var(--gray-90-inv);
 }
 
 .menu {
@@ -67,5 +67,5 @@
 }
 
 .menuButton:hover {
-  background: white;
+  background: var(--bg-main-inv);
 }

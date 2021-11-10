@@ -53,7 +53,10 @@
   --gray-e4: #e4e4e4;
   --gray-c4: #c4c4c4;
   --gray-99: #999;
+  --gray-66: #666;
   --gray-33: #333;
+  --gray-15: #151515;
+  --bg-main: white;
 }
 
 * {
@@ -64,7 +67,8 @@ body {
   margin: 0;
   font-family: 'SF UI';
   font-size: 16px;
-  color: var(--font-main);
+  color: var(--font-main-inv);
+  background: var(--bg-main-inv);
 }
 
 a {

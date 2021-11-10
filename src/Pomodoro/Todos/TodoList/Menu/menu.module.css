@@ -2,9 +2,10 @@
   position: relative;
   margin: 0;
   padding: 7px 0;
-  border: solid 1px var(--gray-c4);
+  border: solid 1px var(--gray-77-inv);
   list-style: none;
-  background-color: white;
+  color: var(--font-main-inv);
+  background-color: var(--bg-main-inv);
 }
 
 .list::before,
@@ -18,12 +19,12 @@
   transform: translate(-50%, 0) rotate(45deg);
   width: 20px;
   height: 20px;
-  background: white;
+  background: var(--bg-main-inv);
 }
 
 .list::before {
   z-index: -1;
-  box-shadow: 0 0 0 1px var(--gray-c4);
+  box-shadow: 0 0 0 1px var(--gray-77-inv);
 }
 
 .liButton {
@@ -36,12 +37,12 @@
   width: 100%;
   line-height: 17px;
   border: none;
-  background-color: white;
+  background-color: var(--bg-main-inv);
   transition: background-color 0.3s ease;
 }
 
 .liButton:hover {
-  background-color: var(--gray-f4);
+  background-color: var(--gray-90-inv);
 }
 
 .liButton.liButton_passive {
@@ -65,5 +66,5 @@
 }
 
 .liButton.liButton_passive * {
-  fill: var(--gray-c4);
+  fill: var(--gray-60-inv);
 }

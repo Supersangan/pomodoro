@@ -9,6 +9,7 @@ import { applyMiddleware, createStore } from 'redux';
 import { rootReducer } from './store/reducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { saveState } from './utils/localstorage';
+import { useTheme } from './hooks/useTheme';
 
 const store = createStore(
   rootReducer,
@@ -20,12 +21,12 @@ const store = createStore(
 
 store.subscribe(() => {
   saveState({
-    todos: store.getState().todos
+    todos: store.getState().todos,
   });
 });
 
 function App() {
-  return ( 
+  return (
     <Provider store={store}>
       <Router>
         <Header />

@@ -4,11 +4,11 @@
   width: 100%;
   height: 55px;
   font-weight: 300;
-  background: var(--gray-f4);
+  background: var(--gray-90-inv);
 }
 
 .input::placeholder {
-  color: var(--gray-light);
+  color: var(--font-light-inv);
 }
 
 .button {

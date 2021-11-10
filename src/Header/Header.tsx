@@ -3,6 +3,7 @@ import styles from './header.module.css';
 import { ReactComponent as IconLogo } from './iconLogo.svg';
 import { ReactComponent as IconStats } from './iconStats.svg';
 import { Link } from 'react-router-dom';
+import { ThemesSwitcher } from './ThemesSwitcher';
 
 export function Header() {
   return (
@@ -13,6 +14,8 @@ export function Header() {
           pomodoro_box
         </Link>
 
+        <ThemesSwitcher />
+        
         <Link className={styles.stats} to="/stats/">
           <IconStats />
           Статистика

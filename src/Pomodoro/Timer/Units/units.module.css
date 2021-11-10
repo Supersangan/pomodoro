@@ -1,9 +1,6 @@
-:root {
+.root {
   --unit-width: 85px;
   --separator-width: 40px;
-}
-
-.root {
   position: relative;
   width: calc(var(--unit-width) * 4 + var(--separator-width));
   height: 120px;
