@@ -3,14 +3,18 @@ import styles from './timer.module.css';
 import { ReactComponent as IconPlus } from './iconPlus.svg';
 import { ReactComponent as IconMinus } from './iconMinus.svg';
 import useInterval from '../../hooks/useInterval';
-import { secondsToTime } from '../../utils/secondsToTime';
-
-const initialTime = 25 * 60;
+import { secondsToTimeUnits } from '../../utils/secondsToTimeUnits';
+import { Units } from './Units';
 
 export function Timer() {
+  const initialTime = 25 * 60;
+
   const [started, setStarted] = useState<boolean>(false);
   const [paused, setPaused] = useState<boolean>(false);
   const [time, setTime] = useState<number>(initialTime);
+  const [timeUnits, setTimeUnits] = useState<number[]>(
+    secondsToTimeUnits(initialTime)
+  );
 
   function startTimer() {
     setStarted(true);
@@ -28,26 +32,38 @@ export function Timer() {
 
   function stopTimer() {
     setTime(0);
+    setTimeUnits(secondsToTimeUnits(0));
     setPaused(true);
   }
 
   function incrementTimer() {
     if (time < 3600) {
-      if (time + 300 <= 3600) setTime(time + 300);
-      else setTime(3600);
+      if (time + 300 <= 3600) {
+        setTime(time + 300);
+        setTimeUnits(secondsToTimeUnits(time + 300));
+      } else {
+        setTime(3600);
+        setTimeUnits(secondsToTimeUnits(3600));
+      }
     }
   }
 
   function decrementTimer() {
     if (time > 0) {
-      if (time - 300 > 0) setTime(time - 300);
-      else setTime(0);
+      if (time - 300 > 0) {
+        setTime(time - 300);
+        setTimeUnits(secondsToTimeUnits(time - 300));
+      } else {
+        setTime(0);
+        setTimeUnits(secondsToTimeUnits(0));
+      }
     }
   }
 
   useInterval(
     () => {
-      setTime(time - 1);
+      setTime(time => time - 1);
+      setTimeUnits(secondsToTimeUnits(time- 1));
     },
     time > 0 && started && !paused ? 1000 : null
   );
@@ -56,7 +72,7 @@ export function Timer() {
     if (time === 0) {
       setPaused(true);
     }
-  }, [time]); 
+  }, [time]);
 
   return (
     <div className={styles.timer}>
@@ -76,7 +92,7 @@ export function Timer() {
             started && time > 0 && styles.clock_active
           } ${time === 0 && styles.clock_stoped}`}
         >
-          {secondsToTime(time)}
+          <Units units={timeUnits} />
 
           <button
             className={styles.minus}
@@ -85,7 +101,6 @@ export function Timer() {
           >
             <IconMinus />
           </button>
-
           <button
             className={styles.plus}
             onClick={incrementTimer}
