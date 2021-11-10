@@ -1,12 +1,23 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { actionAddTodo } from '../../../store/todos/reducer';
 import styles from './todoform.module.css';
 
-interface IFormProps {
-  addTodo: (name: string) => void;
-}
-
-export function TodoForm({ addTodo }: IFormProps) {
+export function TodoForm() {
   const [todoName, setTodoName] = useState('');
+  const dispatch = useDispatch();
+
+  function addTodo(name: string) {
+    if (!name.length) return;
+
+    dispatch(
+      actionAddTodo({
+        id: Math.random().toString().substr(2, 9),
+        name,
+        count: 1,
+      })
+    );
+  }
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setTodoName(e.currentTarget.value);

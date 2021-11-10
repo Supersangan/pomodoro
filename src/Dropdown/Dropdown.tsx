@@ -20,15 +20,10 @@ export function Dropdown({
   onClose = NOOP,
 }: IDropdownProps) {
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(isOpen);
+  
   const [left, setLeft] = React.useState(0);
   const [top, setTop] = React.useState(0);
   const [width, setWidth] = React.useState(0);
-
-  React.useEffect(() => setIsDropdownOpen(isOpen), [isOpen]);
-  React.useEffect(
-    () => (isDropdownOpen ? onOpen() : onClose()),
-    [isDropdownOpen, onOpen, onClose]
-  );
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -42,15 +37,19 @@ export function Dropdown({
   }
 
   const handleOpen = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (!isOpen) {
+    event.stopPropagation();
+    
+    if (!isDropdownOpen) {
       setModalAttributes(ref);
-      setIsDropdownOpen(!isDropdownOpen);
     }
+
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
+  
   useEffect(() => {
     if (!isDropdownOpen) return;
-
+    
     function handleResize() {
       setModalAttributes(ref);
     }

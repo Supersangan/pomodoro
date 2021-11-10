@@ -1,85 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { TodoForm } from './TodoForm';
 import { TodoList } from './TodoList';
 import styles from './todos.module.css';
 
-const initialTodos = [
-  {
-    id: '1',
-    name: 'Сверстать 1 сайт',
-    count: 1,
-  },
-  {
-    id: '2',
-    name: 'Сверстать второй сайт',
-    count: 3,
-  },
-  {
-    id: '3',
-    name: 'Выгулять собаку',
-    count: 2,
-  },
-];
-
-export function Todos() {
-  const [todos, setTodos] = useState(initialTodos);
-
-  function addTodo(name: string) {
-    if (!name.length) return;
-
-    setTodos([
-      ...todos,
-      {
-        id: Math.random().toString().substr(2, 9),
-        name,
-        count: 1,
-      },
-    ]);
-  }
-
-  function incrementTodo(id: string) {
-    setTodos(
-      todos.map((todo) => {
-        if (todo.id === id) {
-          todo.count++;
-        }
-        return todo;
-      })
-    );
-  }
-
-  function decrementTodo(id: string) {
-    setTodos(
-      todos.map((todo) => {
-        if (todo.id === id && todo.count > 1) {
-          todo.count--;
-        }
-        return todo;
-      })
-    );
-  }
-
-  function renameTodo(id: string, name: string) {
-    setTodos(
-      todos.map((todo) => {
-        if (todo.id === id && name.length) {
-          todo.name = name;
-        }
-        return todo;
-      })
-    );
-  }
-
-  function deleteTodo(id: string) {
-    setTodos(todos.filter((todo) => todo.id !== id));
-  }
-
-  const todosMethods = {
-    incrementTodo,
-    decrementTodo,
-    renameTodo,
-    deleteTodo,
-  };
+export function Todos() {  
 
   return (
     <div className={styles.root}>
@@ -103,11 +27,11 @@ export function Todos() {
       </ul>
 
       <div className={styles.todosForm}>
-        <TodoForm addTodo={addTodo} />
+        <TodoForm />
       </div>
 
       <div className={styles.todosLlist}>
-        <TodoList todos={todos} methods={todosMethods} />
+        <TodoList/>
       </div>
     </div>
   );

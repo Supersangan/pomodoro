@@ -1,14 +1,8 @@
 .list {
+  margin: 0;
+  margin-bottom: 20px;
   padding: 0;
   list-style: none;
-}
-
-.li {
-  position: relative;
-  margin-bottom: -1px;
-  border-width: 1px 0 1px 0;
-  border-style: solid;
-  border-color: var(--gray-e4);
 }
 
 .total {

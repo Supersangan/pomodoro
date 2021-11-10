@@ -14,7 +14,7 @@ interface IDropDownModalProps {
 export function DropdownModal({
   children,
   setIsDropdownOpen,
-  onClose,
+  onClose = () => null,
   left,
   top,
   width,
@@ -22,7 +22,7 @@ export function DropdownModal({
   const node = document.querySelector('#dropdownModal_root');
   const ref = useRef<HTMLDivElement>(null);
 
-  function handleClick(e: React.MouseEvent<HTMLInputElement>) {
+  function handleClick(e: React.MouseEvent<HTMLDivElement>) {
     const target = e.target as HTMLElement;
 
     if (target.closest('button')?.dataset.notCloser) {
@@ -31,7 +31,7 @@ export function DropdownModal({
       setIsDropdownOpen(false);
     }
   }
-
+  
   useEffect(() => {
     function handleClick(event: MouseEvent) {
       if (

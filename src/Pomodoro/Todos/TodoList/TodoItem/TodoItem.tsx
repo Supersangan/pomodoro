@@ -1,14 +1,18 @@
-import React, {
-  createRef,
-  RefObject,
-  useEffect,
-  useState,
-} from 'react';
+import React, { createRef, useEffect, useState } from 'react';
 import { Dropdown } from '../../../../Dropdown';
-import { ITodoMethodsProps, Menu } from '../Menu';
+import { Menu } from '../Menu';
 import styles from './todoitem.module.css';
 import { ReactComponent as IconMenu } from './iconMenu.svg';
 import { setCaretToEnd } from '../../../../utils/setCaretToEnd';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { useDispatch } from 'react-redux';
+import {
+  actionDecrementTodo,
+  actionDeleteTodo,
+  actionIncrementTodo,
+  actionRenameTodo,
+} from '../../../../store/todos/reducer';
 
 export interface ITodoProps {
   id: string;
@@ -18,43 +22,67 @@ export interface ITodoProps {
 
 export interface ITodoItemProps {
   todo: ITodoProps;
-  methods: ITodoMethodsProps;
 }
 
-export function TodoItem(props: ITodoItemProps) {
-  const {
-    todo,
-    methods,
-  } = props;
+export function TodoItem({ todo }: ITodoItemProps) {
   const [nameEditable, setNameEditable] = useState(false);
+  const dispatch = useDispatch();
 
-  const ref = createRef<HTMLDivElement>();
+  const nameRef = createRef<HTMLInputElement>();
 
-  function editTodo(nameRef: RefObject<HTMLDivElement>) {
-    if (!ref.current) return;
+  function incrementTodo(id: string) {
+    dispatch(actionIncrementTodo(id));
+  }
+
+  function decrementTodo(id: string) {
+    dispatch(actionDecrementTodo(id));
+  }
+
+  function renameTodo(id: string, name: string) {
+    dispatch(actionRenameTodo(id, name));
+  }
+
+  function deleteTodo(id: string) {
+    dispatch(actionDeleteTodo(id));
+  }
+
+  function editTodo(): void {
     setNameEditable(true);
   }
 
   useEffect(() => {
-    if (!ref.current) return;
+    if (!nameRef.current) return;
 
     if (nameEditable) {
-      const input: HTMLInputElement | null = ref.current.querySelector('input');
-      if (!input) return;
+      const input: HTMLInputElement | null = nameRef.current;
       setCaretToEnd(input);
     }
-  }, [ref, nameEditable]);
+  }, [nameRef, nameEditable]);
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    methods.renameTodo(todo.id, e.currentTarget.value);
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>): void {
+    renameTodo(todo.id, e.currentTarget.value);
   }
 
-  function handleBlur() {
+  function handleBlur(): void {
     setNameEditable(false);
   }
 
+  const { setNodeRef, attributes, listeners, transition, transform } =
+    useSortable({ id: todo.id });
+
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  };
+
   return (
-    <div className={styles.root} ref={ref}>
+    <li
+      className={styles.root}
+      {...attributes}
+      {...listeners}
+      style={style}
+      ref={setNodeRef}
+    >
       <button className={styles.button}>
         <span className={styles.number}>{todo.count}</span>
 
@@ -66,6 +94,7 @@ export function TodoItem(props: ITodoItemProps) {
             value={todo.name}
             onChange={handleChange}
             onBlur={handleBlur}
+            ref={nameRef}
           />
         )}
       </button>
@@ -79,14 +108,23 @@ export function TodoItem(props: ITodoItemProps) {
           }
         >
           <Menu
-            id={todo.id}
             count={todo.count}
-            methods={methods}
+            incrementTodo={() => {
+              incrementTodo(todo.id);
+            }}
+            decrementTodo={() => {
+              decrementTodo(todo.id);
+            }}
             editTodo={editTodo}
-            nameRef={ref}
+            renameTodo={() => {
+              decrementTodo(todo.id);
+            }}
+            deleteTodo={() => {
+              deleteTodo(todo.id);
+            }}
           />
         </Dropdown>
-      </div> 
-    </div>
+      </div>
+    </li>
   );
 }

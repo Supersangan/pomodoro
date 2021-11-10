@@ -8,14 +8,14 @@
   padding: 19px 40px;
   color: white;
   background-color: var(--gray-c4);
-  transition: background-color .3s ease;
+  transition: background-color 0.3s ease;
 }
 
-.header.header_done {
+.header.header_active {
   background-color: var(--green-light);
 }
 
-.header.header_damage {
+.header.header_stoped {
   background-color: var(--orange-bright);
 }
 
@@ -34,24 +34,25 @@
 
 .clock {
   position: relative;
-  margin-bottom: -9px;  
+  margin-bottom: -9px;
   width: 390px;
   line-height: 179px;
   font-size: 150px;
   font-weight: 200;
   text-align: center;
-  transition: color .3s ease;
+  transition: color 0.3s ease;
 }
 
-.clock.clock_done {
+.clock.clock_active {
   color: var(--green-light);
 }
 
-.clock.clock_damage {
+.clock.clock_stoped {
   color: var(--orange-bright);
 }
 
-.plus {
+.plus,
+.minus {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -64,10 +65,15 @@
   width: 50px;
   height: 50px;
   background-color: var(--gray-c4);
-  transition: background-color .3s ease;
+  transition: background-color 0.3s ease;
 }
 
-.plus:hover {
+.minus {
+  left: -65px;
+}
+
+.plus:hover,
+.minus:hover {
   background-color: var(--green-dark);
 }
 
@@ -89,7 +95,7 @@
   line-height: 17px;
   color: white;
   background: var(--green-light);
-  transition: background-color .3s ease;
+  transition: background-color 0.3s ease;
 }
 
 .button:hover {
@@ -100,7 +106,7 @@
   border: 2px solid var(--orange-bright);
   color: var(--orange-bright);
   background: transparent;
-  transition: background-color .3s ease, color .3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .button.button_stop:hover {
