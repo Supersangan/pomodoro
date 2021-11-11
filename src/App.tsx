@@ -9,7 +9,7 @@ import { applyMiddleware, createStore } from 'redux';
 import { rootReducer } from './store/reducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { saveState } from './utils/localstorage';
-import { useTheme } from './hooks/useTheme';
+import { EModes } from './Header/ThemesSwitcher';
 
 const store = createStore(
   rootReducer,
@@ -22,6 +22,7 @@ const store = createStore(
 store.subscribe(() => {
   saveState({
     todos: store.getState().todos,
+    themeMode: store.getState().themeMode || EModes.light,
   });
 });
 

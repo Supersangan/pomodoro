@@ -8,7 +8,7 @@ import { ThemesSwitcher } from './ThemesSwitcher';
 export function Header() {
   return (
     <header className={styles.root}>
-      <div className={styles.container + ' container'}>
+      <div className={`${styles.container} container`}>
         <Link className={styles.logo} to={'/'}>
           <IconLogo />
           pomodoro_box

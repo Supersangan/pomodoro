@@ -1,4 +1,5 @@
-import { Reducer } from 'redux';
+import { ActionCreator, Reducer } from 'redux';
+import { EModes } from '../Header/ThemesSwitcher';
 import { ITodoProps } from '../Pomodoro/Todos/TodoList/TodoItem';
 import { loadState } from '../utils/localstorage';
 import {
@@ -19,17 +20,41 @@ import {
 
 export type TRootState = {
   todos: ITodoProps[];
+  themeMode: EModes;
 };
 
 const initialState: TRootState = loadState();
 
-type TMyAction = TAddTodoAction | TIncrementTodoAction | TDecrementTodoAction | TRenameTodoAction | TDeleteTodoAction | TSwapTodosAction;
+// SAVE THEME
+const THEME_SAVE = 'THEME_SAVE';
+
+type TSaveThemeAction = {
+  type: typeof THEME_SAVE;
+  themeMode: EModes;
+};
+
+export const actionSaveThemeMode: ActionCreator<TSaveThemeAction> = (themeMode) => ({
+  type: THEME_SAVE,
+  themeMode,
+});
+
+type TMyAction =
+  | TSaveThemeAction
+  | TAddTodoAction
+  | TIncrementTodoAction
+  | TDecrementTodoAction
+  | TRenameTodoAction
+  | TDeleteTodoAction
+  | TSwapTodosAction;
 
 export const rootReducer: Reducer<TRootState, TMyAction> = (
   state = initialState,
   action
 ) => {
   switch (action.type) {
+    case THEME_SAVE:
+      return { ...state, themeMode: action.themeMode };
+
     case TODO_ADD:
     case TODO_INCREMENT:
     case TODO_DECREMENT:

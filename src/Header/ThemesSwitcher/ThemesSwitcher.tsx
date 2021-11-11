@@ -3,6 +3,8 @@ import styles from './themesswitcher.module.css';
 import { ReactComponent as IconSun } from './iconSun.svg';
 import { ReactComponent as IconMoon } from './iconMoon.svg';
 import { ITheme, useTheme } from '../../hooks/useTheme';
+import { useDispatch, useSelector } from 'react-redux';
+import { actionSaveThemeMode, TRootState } from '../../store/reducer';
 
 interface IThemes {
   light: ITheme;
@@ -32,30 +34,40 @@ const themes: IThemes = {
   },
 };
 
-type TMode = 'light' | 'dark';
+export enum EModes {
+  light = 'light',
+  dark = 'dark',
+}
 
 export function ThemesSwitcher() {
-  const [mode, setMode] = useState<TMode>('light');
-  const [theme, setTheme] = useState<ITheme>(themes[mode]);
+  const dispatch = useDispatch();
+  const themeMode =
+    useSelector<TRootState, EModes>((state) => state?.themeMode) || EModes.light;
+  const [theme, setTheme] = useState<ITheme>(themes[themeMode]);
 
   useEffect(() => {
-    setTheme(themes[mode]);
-  }, [mode]);
+    setTheme(themes[themeMode]);
+  }, [themeMode]);
 
   useTheme(theme);
 
+  function handleClick() {
+    dispatch(actionSaveThemeMode(themeMode === EModes.light ? EModes.dark : EModes.light));
+  }
+ 
   return (
     <button
       className={styles.root}
-      onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}
+      onClick={handleClick}
     >
-      <IconSun width="20px" height="20px" />
-      <IconMoon width="15px" height="15px" />
+      <IconSun width="15px" height="15px" /> 
+      <IconMoon width="12px" height="12px" />
       <span
         className={`${styles.switcher} ${
-          mode === 'dark' ? styles.switcher_dark : ''
+          themeMode === 'dark' ? styles.switcher_dark : ''
         }`}
       />
     </button>
   );
 }
+
