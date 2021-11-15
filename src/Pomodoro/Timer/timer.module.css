@@ -12,11 +12,11 @@
   transition: background-color 0.3s ease;
 }
 
-.header.header_active {
+.header.header_rest {
   background-color: var(--green-light);
 }
 
-.header.header_stoped {
+.header.header_work {
   background-color: var(--orange-bright);
 }
 
@@ -42,11 +42,11 @@
   transition: color 0.3s ease;
 }
 
-.clock.clock_active {
+.clock.clock_rest {
   color: var(--green-light);
 }
 
-.clock.clock_stoped {
+.clock.clock_work {
   color: var(--orange-bright);
 }
 
@@ -102,20 +102,20 @@
   background-color: var(--green-dark);
 }
 
-.button.button_stop {
+.button.button_orange {
   border: 2px solid var(--orange-bright);
   color: var(--orange-bright);
   background: transparent;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.button.button_stop:hover {
+.button.button_orange:hover {
   border: 2px solid var(--orange-bright);
   color: white;
   background: var(--orange-bright);
 }
 
-.button.button_stop.button_passive {
+.button.button_orange.button_passive {
   border-color: var(--gray-c4);
   color: var(--gray-c4);
   pointer-events: none;

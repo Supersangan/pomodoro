@@ -15,6 +15,7 @@ export function TodoForm() {
         id: Math.random().toString().substr(2, 9),
         name,
         count: 1,
+        done: 0,
       })
     );
   }

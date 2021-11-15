@@ -46,6 +46,21 @@ export const actionDecrementTodo: ActionCreator<TDecrementTodoAction> = (
   id,
 });
 
+// PROGRESS TODO
+export const TODO_PROGRESS = 'TODO_PROGRESS';
+
+export type TProgressTodoAction = {
+  type: typeof TODO_PROGRESS;
+  id: string;
+};
+
+export const actionProgressTodo: ActionCreator<TProgressTodoAction> = (
+  id
+) => ({
+  type: TODO_PROGRESS,
+  id,
+});
+
 // RENAME TODO
 export const TODO_RENAME = 'TODO_RENAME';
 
@@ -77,7 +92,7 @@ export const actionDeleteTodo: ActionCreator<TDeleteTodoAction> = (id) => ({
   id,
 });
 
-// SWAP TODS
+// SWAP TODOS
 export const TODOS_SWAP = 'TODOS_SWAP';
 
 export type TSwapTodosAction = {
@@ -96,6 +111,7 @@ type TTodosActions =
   | TAddTodoAction
   | TIncrementTodoAction
   | TDecrementTodoAction
+  | TProgressTodoAction
   | TRenameTodoAction
   | TDeleteTodoAction
   | TSwapTodosAction
@@ -120,8 +136,17 @@ export const todosReducer: Reducer<ITodoProps[], TTodosActions> = (
 
     case TODO_DECREMENT:
       return state.map((todo) => {
-        if (todo.id === action.id && todo.count > 1) {
+        if (todo.id === action.id) {
           todo.count--;
+        }
+
+        return todo;
+      });
+
+      case TODO_PROGRESS:
+      return state.map((todo) => {
+        if (todo.id === action.id) {
+          todo.done++;
         }
 
         return todo;

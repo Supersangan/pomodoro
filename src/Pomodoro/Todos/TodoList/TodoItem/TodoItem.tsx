@@ -18,6 +18,7 @@ export interface ITodoProps {
   id: string;
   name: string;
   count: number;
+  done: number;
 }
 
 export interface ITodoItemProps {

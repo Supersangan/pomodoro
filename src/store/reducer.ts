@@ -13,7 +13,9 @@ import {
   TODO_DECREMENT,
   TODO_DELETE,
   TODO_INCREMENT,
+  TODO_PROGRESS,
   TODO_RENAME,
+  TProgressTodoAction,
   TRenameTodoAction,
   TSwapTodosAction,
 } from './todos/reducer';
@@ -33,7 +35,9 @@ type TSaveThemeAction = {
   themeMode: EModes;
 };
 
-export const actionSaveThemeMode: ActionCreator<TSaveThemeAction> = (themeMode) => ({
+export const actionSaveThemeMode: ActionCreator<TSaveThemeAction> = (
+  themeMode
+) => ({
   type: THEME_SAVE,
   themeMode,
 });
@@ -43,6 +47,7 @@ type TMyAction =
   | TAddTodoAction
   | TIncrementTodoAction
   | TDecrementTodoAction
+  | TProgressTodoAction
   | TRenameTodoAction
   | TDeleteTodoAction
   | TSwapTodosAction;
@@ -58,6 +63,7 @@ export const rootReducer: Reducer<TRootState, TMyAction> = (
     case TODO_ADD:
     case TODO_INCREMENT:
     case TODO_DECREMENT:
+    case TODO_PROGRESS:
     case TODO_RENAME:
     case TODO_DELETE:
     case TODOS_SWAP:
