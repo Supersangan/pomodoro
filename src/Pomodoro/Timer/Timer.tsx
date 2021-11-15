@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from './timer.module.css';
 import { ReactComponent as IconPlus } from './iconPlus.svg';
 import { ReactComponent as IconMinus } from './iconMinus.svg';
@@ -72,12 +72,8 @@ export function Timer() {
   }
 
   function decrementTimer() {
-    if (time > 0) {
-      if (time - 300 > 0) {
-        setTime(time - 300);
-      } else {
-        setTime(0);
-      }
+    if (time - 300 > 0) {
+      setTime(time - 300);
     }
   }
 
@@ -93,10 +89,14 @@ export function Timer() {
     setStatus(EStatuses.paused);
   }
 
-  function countTimer() {
+  const countTimer = useCallback(() => {
+    if (todoIndex !== -1 && todoDone < todoCount) {
+      dispatch(actionProgressTodo(todoId));
+    }
+
     setStatus(EStatuses.initial);
-    setMode(mode === EModes.work ? EModes.rest : EModes.work);
-  }
+    setMode((mode) => (mode === EModes.work ? EModes.rest : EModes.work));
+  }, [dispatch, todoIndex, todoId, todoCount, todoDone]); 
 
   function skipTimer() {
     setStatus(EStatuses.initial);
@@ -109,16 +109,22 @@ export function Timer() {
 
   useInterval(
     () => {
-      setTime((time) => time - 1);
+      setTime((time) => time - 1); 
     },
     status === EStatuses.inProgress ? 1000 : null
   );
 
   useEffect(() => {
-    if (time === 0 && todoIndex !== -1) {
+    if (time === 0 && todoIndex !== -1 && todoDone < todoCount) {
       dispatch(actionProgressTodo(todoId));
     }
-  }, [time, todoId, todoIndex, dispatch]);
+  }, [time, dispatch, todoIndex, todoId, todoCount, todoDone]);
+
+  useEffect(() => {
+    if (time === 0) {
+      countTimer();
+    }
+  }, [time, countTimer]);
 
   return (
     <div className={styles.timer}>

@@ -22,7 +22,13 @@ const TIME = 25;
 
 export function TodoList() {
   const todos =
-    useSelector<TRootState, ITodoProps[]>((state) => state?.todos) || [];
+    useSelector<TRootState, ITodoProps[]>((state) => {
+      const todos = state?.todos.filter((todo) => {
+        return todo.done < todo.count;
+      });
+      return todos;
+    }) || [];
+
   const dispatch = useDispatch();
 
   const summaryCount = todos.reduce(
