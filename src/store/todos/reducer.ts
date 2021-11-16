@@ -8,9 +8,9 @@ export const TODO_ADD = 'TODO_ADD';
 
 export type TAddTodoAction = {
   type: typeof TODO_ADD;
-  todo: ITodo;
+  todo: ITodo; 
 };
-
+  
 export const actionAddTodo: ActionCreator<TAddTodoAction> = (todo) => ({
   type: TODO_ADD,
   todo,

@@ -1,8 +1,8 @@
-import { Stats } from 'fs';
 import { ActionCreator, Reducer } from 'redux';
 import { EModes } from '../Header/ThemesSwitcher';
 import { ETimerModes, ETimerStatuses } from '../Pomodoro/Timer';
 import { loadState } from '../utils/localstorage';
+import { timerReducer, TIMER_SET_MODE, TSetTimerMode } from './timer/reducer';
 import {
   TAddTodoAction,
   TDecrementTodoAction,
@@ -28,12 +28,12 @@ export interface ITodo {
   done: number;
 }
 
-interface ITimer {
-  mode: ETimerModes;
-  status: ETimerStatuses;
+export interface ITimer {
+  mode?: ETimerModes;
+  status?: ETimerStatuses;
 }
 
-interface IStats {
+export interface IStats {
   [index: number]: {
     timeStamp: number;
     totalTime: number;
@@ -46,7 +46,7 @@ interface IStats {
 export type TRootState = {
   todos?: ITodo[];
   stats?: IStats;
-  tinmer?: ITimer;
+  timer?: ITimer;
   themeMode?: EModes;
 };
 
@@ -67,7 +67,7 @@ export const actionSaveThemeMode: ActionCreator<TSaveThemeAction> = (
   themeMode,
 });
 
-type TMyAction =
+type TMyActions =
   | TSaveThemeAction
   | TAddTodoAction
   | TIncrementTodoAction
@@ -75,9 +75,10 @@ type TMyAction =
   | TProgressTodoAction
   | TRenameTodoAction
   | TDeleteTodoAction
-  | TSwapTodosAction;
+  | TSwapTodosAction
+  | TSetTimerMode;
 
-export const rootReducer: Reducer<TRootState, TMyAction> = (
+export const rootReducer: Reducer<TRootState, TMyActions> = (
   state = initialState,
   action
 ) => {
@@ -95,6 +96,12 @@ export const rootReducer: Reducer<TRootState, TMyAction> = (
       return {
         ...state,
         todos: todosReducer(state?.todos, action),
+      };
+
+    case TIMER_SET_MODE:
+      return {
+        ...state,
+        timer: timerReducer(state?.timer, action),
       };
 
     default:

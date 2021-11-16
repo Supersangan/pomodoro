@@ -22,6 +22,7 @@ const store = createStore(
 store.subscribe(() => {
   saveState({
     todos: store.getState().todos,
+    timer: store.getState().timer,
     themeMode: store.getState().themeMode || EModes.light,
   });
 });

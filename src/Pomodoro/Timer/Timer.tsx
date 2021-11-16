@@ -9,14 +9,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ITodo, TRootState } from '../../store/reducer';
 import { actionProgressTodo } from '../../store/todos/reducer';
 import classNames from 'classnames';
+import { actionSetTimerMode } from '../../store/timer/reducer';
 
 export enum ETimerModes {
   work = 'work',
-  rest = 'rest',
+  rest = 'rest', 
 }
 
 export enum ETimerStatuses {
-  initial = 'initial', 
+  initial = 'initial',
   inProgress = 'inProgress',
   paused = 'paused',
 }
@@ -28,9 +29,13 @@ export function Timer() {
   const dispatch = useDispatch();
 
   const [status, setStatus] = useState<ETimerStatuses>(ETimerStatuses.initial);
-  const [mode, setMode] = useState<ETimerModes>(ETimerModes.work);
+  
+  const mode = useSelector<TRootState, ETimerModes>((state) => {
+    if (!state?.timer?.mode) return ETimerModes.work;
+    return state.timer.mode;
+  });
 
-  const [time, setTime] = useState<number>(INITIAL_WORK_TIME);
+  const [time, setTime] = useState<number>(mode === ETimerModes.work ? INITIAL_WORK_TIME : INITIAL_REST_TIME);
 
   function getTodoActualIndex(todos: ITodo[]): number {
     let todoIndex: number = -1;
@@ -47,7 +52,7 @@ export function Timer() {
   const todos = useSelector<TRootState, ITodo[]>((state) => state?.todos || []);
 
   const todoIndex = getTodoActualIndex(todos);
-  
+
   const todoId = useSelector<TRootState, string>((state) => {
     if (!state?.todos) return '';
     return state?.todos[todoIndex]?.id;
@@ -102,14 +107,20 @@ export function Timer() {
     }
 
     setStatus(ETimerStatuses.initial);
-    setMode((mode) =>
-      mode === ETimerModes.work ? ETimerModes.rest : ETimerModes.work
+    dispatch(
+      actionSetTimerMode(
+        mode === ETimerModes.work ? ETimerModes.rest : ETimerModes.work
+      )
     );
-  }, [dispatch, todoIndex, todoId, todoCount, todoDone]);
+  }, [dispatch, todoIndex, todoId, todoCount, todoDone, mode]);
 
   function skipTimer() {
     setStatus(ETimerStatuses.initial);
-    setMode(mode === ETimerModes.work ? ETimerModes.rest : ETimerModes.work);
+    dispatch(
+      actionSetTimerMode(
+        mode === ETimerModes.work ? ETimerModes.rest : ETimerModes.work
+      )
+    ); 
   }
 
   useEffect(() => {
