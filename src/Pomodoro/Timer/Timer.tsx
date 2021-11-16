@@ -6,18 +6,17 @@ import useInterval from '../../hooks/useInterval';
 import { secondsToTimeUnits } from '../../utils/secondsToTimeUnits';
 import { Units } from './Units';
 import { useDispatch, useSelector } from 'react-redux';
-import { TRootState } from '../../store/reducer';
-import { ITodoProps } from '../Todos/TodoList/TodoItem';
+import { ITodo, TRootState } from '../../store/reducer';
 import { actionProgressTodo } from '../../store/todos/reducer';
 import classNames from 'classnames';
 
-enum EModes {
+export enum ETimerModes {
   work = 'work',
   rest = 'rest',
 }
 
-enum EStatuses {
-  initial = 'initial',
+export enum ETimerStatuses {
+  initial = 'initial', 
   inProgress = 'inProgress',
   paused = 'paused',
 }
@@ -28,12 +27,12 @@ export function Timer() {
 
   const dispatch = useDispatch();
 
-  const [status, setStatus] = useState<EStatuses>(EStatuses.initial);
-  const [mode, setMode] = useState<EModes>(EModes.work);
+  const [status, setStatus] = useState<ETimerStatuses>(ETimerStatuses.initial);
+  const [mode, setMode] = useState<ETimerModes>(ETimerModes.work);
 
   const [time, setTime] = useState<number>(INITIAL_WORK_TIME);
 
-  function getTodoActualIndex(todos: ITodoProps[]): number {
+  function getTodoActualIndex(todos: ITodo[]): number {
     let todoIndex: number = -1;
 
     for (let i = 0; todoIndex === -1 && i <= todos.length; i++) {
@@ -45,21 +44,29 @@ export function Timer() {
     return todoIndex;
   }
 
-  const todos = useSelector<TRootState, ITodoProps[]>((state) => state.todos);
+  const todos = useSelector<TRootState, ITodo[]>((state) => state?.todos || []);
 
   const todoIndex = getTodoActualIndex(todos);
-  const todoId = useSelector<TRootState, string>(
-    (state) => state.todos[todoIndex]?.id || ''
-  );
-  const todoName = useSelector<TRootState, string>(
-    (state) => state.todos[todoIndex]?.name || ''
-  );
-  const todoCount = useSelector<TRootState, number>(
-    (state) => state.todos[todoIndex]?.count || 0
-  );
-  const todoDone = useSelector<TRootState, number>(
-    (state) => state.todos[todoIndex]?.done || 0
-  );
+  
+  const todoId = useSelector<TRootState, string>((state) => {
+    if (!state?.todos) return '';
+    return state?.todos[todoIndex]?.id;
+  });
+
+  const todoName = useSelector<TRootState, string>((state) => {
+    if (!state?.todos) return '';
+    return state.todos[todoIndex]?.name;
+  });
+
+  const todoCount = useSelector<TRootState, number>((state) => {
+    if (!state?.todos) return 0;
+    return state.todos[todoIndex]?.count;
+  });
+
+  const todoDone = useSelector<TRootState, number>((state) => {
+    if (!state?.todos) return 0;
+    return state.todos[todoIndex]?.done;
+  });
 
   function incrementTimer() {
     if (time < 3600) {
@@ -78,15 +85,15 @@ export function Timer() {
   }
 
   function startTimer() {
-    setStatus(EStatuses.inProgress);
+    setStatus(ETimerStatuses.inProgress);
   }
 
   function resumeTimer() {
-    setStatus(EStatuses.inProgress);
+    setStatus(ETimerStatuses.inProgress);
   }
 
   function pauseTimer() {
-    setStatus(EStatuses.paused);
+    setStatus(ETimerStatuses.paused);
   }
 
   const countTimer = useCallback(() => {
@@ -94,24 +101,26 @@ export function Timer() {
       dispatch(actionProgressTodo(todoId));
     }
 
-    setStatus(EStatuses.initial);
-    setMode((mode) => (mode === EModes.work ? EModes.rest : EModes.work));
-  }, [dispatch, todoIndex, todoId, todoCount, todoDone]); 
+    setStatus(ETimerStatuses.initial);
+    setMode((mode) =>
+      mode === ETimerModes.work ? ETimerModes.rest : ETimerModes.work
+    );
+  }, [dispatch, todoIndex, todoId, todoCount, todoDone]);
 
   function skipTimer() {
-    setStatus(EStatuses.initial);
-    setMode(mode === EModes.work ? EModes.rest : EModes.work);
+    setStatus(ETimerStatuses.initial);
+    setMode(mode === ETimerModes.work ? ETimerModes.rest : ETimerModes.work);
   }
 
   useEffect(() => {
-    setTime(mode === EModes.work ? INITIAL_WORK_TIME : INITIAL_REST_TIME);
+    setTime(mode === ETimerModes.work ? INITIAL_WORK_TIME : INITIAL_REST_TIME);
   }, [mode, INITIAL_WORK_TIME, INITIAL_REST_TIME]);
 
   useInterval(
     () => {
-      setTime((time) => time - 1); 
+      setTime((time) => time - 1);
     },
-    status === EStatuses.inProgress ? 1000 : null
+    status === ETimerStatuses.inProgress ? 1000 : null
   );
 
   useEffect(() => {
@@ -131,11 +140,11 @@ export function Timer() {
       <div
         className={classNames(
           styles.header,
-          mode === EModes.work ? styles.header_work : styles.header_rest
+          mode === ETimerModes.work ? styles.header_work : styles.header_rest
         )}
       >
         <span className={styles.heading}>
-          {mode === EModes.work
+          {mode === ETimerModes.work
             ? todoIndex >= 0
               ? `${todoName}`
               : 'Работа'
@@ -143,7 +152,7 @@ export function Timer() {
         </span>
 
         <span className={styles.number}>
-          {mode === EModes.work
+          {mode === ETimerModes.work
             ? todoIndex >= 0
               ? `Помидор ${todoDone + 1}/${todoCount}`
               : ''
@@ -155,11 +164,11 @@ export function Timer() {
         <div
           className={classNames(
             styles.clock,
-            status !== EStatuses.paused &&
-              mode === EModes.work &&
+            status !== ETimerStatuses.paused &&
+              mode === ETimerModes.work &&
               styles.clock_work,
-            status !== EStatuses.paused &&
-              mode === EModes.rest &&
+            status !== ETimerStatuses.paused &&
+              mode === ETimerModes.rest &&
               styles.clock_rest
           )}
         >
@@ -181,7 +190,7 @@ export function Timer() {
           </button>
         </div>
 
-        {mode === EModes.work ? (
+        {mode === ETimerModes.work ? (
           todoIndex >= 0 ? (
             <p className={styles.text}>
               <span className={styles.light}>Задача {todoIndex + 1} — </span>
@@ -200,7 +209,7 @@ export function Timer() {
 
         <div className={styles.actions}>
           {/* Left buttons */}
-          {status === EStatuses.initial && (
+          {status === ETimerStatuses.initial && (
             <button
               className={classNames('button', styles.button)}
               onClick={startTimer}
@@ -209,7 +218,7 @@ export function Timer() {
             </button>
           )}
 
-          {status === EStatuses.inProgress && (
+          {status === ETimerStatuses.inProgress && (
             <button
               className={classNames('button', styles.button)}
               onClick={pauseTimer}
@@ -218,7 +227,7 @@ export function Timer() {
             </button>
           )}
 
-          {status === EStatuses.paused && (
+          {status === ETimerStatuses.paused && (
             <button
               className={classNames('button', styles.button)}
               onClick={resumeTimer}
@@ -229,14 +238,14 @@ export function Timer() {
 
           {/* Right Buttons */}
           {/* Work mode */}
-          {mode === EModes.work && status !== EStatuses.paused && (
+          {mode === ETimerModes.work && status !== ETimerStatuses.paused && (
             <button
               className={classNames(
                 'button',
                 styles.button,
                 styles.button_orange,
 
-                status === EStatuses.initial && styles.button_passive
+                status === ETimerStatuses.initial && styles.button_passive
               )}
               onClick={skipTimer}
             >
@@ -244,7 +253,7 @@ export function Timer() {
             </button>
           )}
 
-          {mode === EModes.work && status === EStatuses.paused && (
+          {mode === ETimerModes.work && status === ETimerStatuses.paused && (
             <button
               className={classNames(
                 'button',
@@ -258,7 +267,7 @@ export function Timer() {
           )}
 
           {/* Rest mode */}
-          {mode === EModes.rest && (
+          {mode === ETimerModes.rest && (
             <button
               className={classNames(
                 'button',

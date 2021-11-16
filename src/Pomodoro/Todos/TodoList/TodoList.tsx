@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './todolist.module.css';
-import { ITodoProps, TodoItem } from './TodoItem';
+import { TodoItem } from './TodoItem';
 import { ESecondsToStrFloor, secondsToStr } from '../../../utils/secondsToStr';
 import {
   closestCenter,
@@ -14,7 +14,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { useDispatch, useSelector } from 'react-redux';
-import { TRootState } from '../../../store/reducer';
+import { ITodo, TRootState } from '../../../store/reducer';
 import { actionSwapTodos } from '../../../store/todos/reducer';
 import { useTransition, animated } from 'react-spring';
 
@@ -22,17 +22,20 @@ const TIME = 25;
 
 export function TodoList() {
   const todos =
-    useSelector<TRootState, ITodoProps[]>((state) => {
-      const todos = state?.todos.filter((todo) => {
+    useSelector<TRootState, ITodo[]>((state) => {
+      if (!state?.todos) return [];
+
+      const todos = state.todos.filter((todo) => {
         return todo.done < todo.count;
       });
+      
       return todos;
-    }) || [];
+    });
 
   const dispatch = useDispatch();
 
   const summaryCount = todos.reduce(
-    (summaryTime: number, todo: ITodoProps): number => {
+    (summaryTime: number, todo: ITodo): number => {
       return summaryTime + todo.count;
     },
     0

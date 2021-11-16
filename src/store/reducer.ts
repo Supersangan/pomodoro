@@ -1,6 +1,7 @@
+import { Stats } from 'fs';
 import { ActionCreator, Reducer } from 'redux';
 import { EModes } from '../Header/ThemesSwitcher';
-import { ITodoProps } from '../Pomodoro/Todos/TodoList/TodoItem';
+import { ETimerModes, ETimerStatuses } from '../Pomodoro/Timer';
 import { loadState } from '../utils/localstorage';
 import {
   TAddTodoAction,
@@ -20,9 +21,33 @@ import {
   TSwapTodosAction,
 } from './todos/reducer';
 
+export interface ITodo {
+  id: string;
+  name: string;
+  count: number;
+  done: number;
+}
+
+interface ITimer {
+  mode: ETimerModes;
+  status: ETimerStatuses;
+}
+
+interface IStats {
+  [index: number]: {
+    timeStamp: number;
+    totalTime: number;
+    productiveTime: number;
+    pauseTime: number;
+    stops: number;
+  };
+}
+
 export type TRootState = {
-  todos: ITodoProps[];
-  themeMode: EModes;
+  todos?: ITodo[];
+  stats?: IStats;
+  tinmer?: ITimer;
+  themeMode?: EModes;
 };
 
 const initialState: TRootState = loadState();

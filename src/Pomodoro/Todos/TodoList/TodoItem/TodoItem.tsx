@@ -13,16 +13,10 @@ import {
   actionIncrementTodo,
   actionRenameTodo,
 } from '../../../../store/todos/reducer';
-
-export interface ITodoProps {
-  id: string;
-  name: string;
-  count: number;
-  done: number;
-}
+import { ITodo } from '../../../../store/reducer';
 
 export interface ITodoItemProps {
-  todo: ITodoProps;
+  todo: ITodo;
 }
 
 export function TodoItem({ todo }: ITodoItemProps) {

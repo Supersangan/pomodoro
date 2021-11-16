@@ -1,14 +1,14 @@
 import { arrayMove } from '@dnd-kit/sortable';
 import { Reducer } from 'react';
 import { ActionCreator } from 'redux';
-import { ITodoProps } from '../../Pomodoro/Todos/TodoList/TodoItem';
+import { ITodo } from '../reducer';
 
 // ADD TODO
 export const TODO_ADD = 'TODO_ADD';
 
 export type TAddTodoAction = {
   type: typeof TODO_ADD;
-  todo: ITodoProps;
+  todo: ITodo;
 };
 
 export const actionAddTodo: ActionCreator<TAddTodoAction> = (todo) => ({
@@ -117,7 +117,7 @@ type TTodosActions =
   | TSwapTodosAction
   ;
 
-export const todosReducer: Reducer<ITodoProps[], TTodosActions> = (
+export const todosReducer: Reducer<ITodo[] | undefined, TTodosActions> = (
   state = [],
   action
 ) => {
@@ -167,7 +167,7 @@ export const todosReducer: Reducer<ITodoProps[], TTodosActions> = (
     case TODOS_SWAP:
       return arrayMove(state, action.leftIndex, action.rightIndex);
 
-    default:
+    default: 
       return state;
   }
 };

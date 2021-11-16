@@ -42,7 +42,7 @@ export enum EModes {
 export function ThemesSwitcher() {
   const dispatch = useDispatch();
   const themeMode =
-    useSelector<TRootState, EModes>((state) => state?.themeMode) || EModes.light;
+    useSelector<TRootState, EModes>((state) => state?.themeMode || EModes.light);
   const [theme, setTheme] = useState<ITheme>(themes[themeMode]);
 
   useEffect(() => {
