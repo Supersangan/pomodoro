@@ -23,8 +23,9 @@ store.subscribe(() => {
   saveState({
     todos: store.getState().todos,
     timer: store.getState().timer,
+    stats: store.getState().stats,
     themeMode: store.getState().themeMode || EModes.light,
-  });
+  }); 
 });
 
 function App() {

@@ -17,6 +17,8 @@ import {
   actionSetTimerStatus,
   actionSetTimerTime,
 } from '../../store/timer/reducer';
+import { actionIncrementTotalTime } from '../../store/stats/reducer';
+import { getTodayDate } from '../../utils/getTodayDate';
 
 export enum ETimerModes {
   work = 'work',
@@ -27,7 +29,7 @@ export enum ETimerStatuses {
   initial = 'initial',
   inProgress = 'inProgress',
   paused = 'paused',
-}
+} 
 
 export function Timer() {
   const INITIAL_WORK_TIME = 25 * 60;
@@ -115,6 +117,21 @@ export function Timer() {
     dispatch(actionSetTimerStatus(ETimerStatuses.paused));
   }
 
+  function stopTimer() {
+    dispatch(actionSetTimerTime(INITIAL_WORK_TIME));
+    dispatch(actionSetTimerStatus(ETimerStatuses.initial));
+    dispatch(actionSetTimerMode(ETimerModes.work));
+  }
+
+  function skipTimer() {
+    dispatch(actionSetTimerStatus(ETimerStatuses.initial));
+    dispatch(
+      actionSetTimerMode(
+        mode === ETimerModes.work ? ETimerModes.rest : ETimerModes.work
+      )
+    );
+  }
+
   const countTimer = useCallback(() => {
     if (todoIndex !== -1 && todoDone < todoCount - 1) {
       dispatch(actionProgressTodo(todoId));
@@ -130,15 +147,6 @@ export function Timer() {
     );
   }, [dispatch, todoIndex, todoId, todoCount, todoDone, mode]);
 
-  function skipTimer() {
-    dispatch(actionSetTimerStatus(ETimerStatuses.initial));
-    dispatch(
-      actionSetTimerMode(
-        mode === ETimerModes.work ? ETimerModes.rest : ETimerModes.work
-      )
-    );
-  }
-
   useEffect(() => {
     dispatch(
       actionSetTimerTime(
@@ -150,6 +158,9 @@ export function Timer() {
   useInterval(
     () => {
       dispatch(actionSetTimerTime(time - 1));
+      if (mode === ETimerModes.work) {
+        dispatch(actionIncrementTotalTime(getTodayDate(), 1)); 
+      }
     },
     status === ETimerStatuses.inProgress ? 1000 : null
   );
@@ -276,7 +287,7 @@ export function Timer() {
 
                 status === ETimerStatuses.initial && styles.button_passive
               )}
-              onClick={skipTimer}
+              onClick={stopTimer}
             >
               Стоп
             </button>

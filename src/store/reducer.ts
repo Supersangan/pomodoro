@@ -2,6 +2,7 @@ import { ActionCreator, Reducer } from 'redux';
 import { EModes } from '../Header/ThemesSwitcher';
 import { ETimerModes, ETimerStatuses } from '../Pomodoro/Timer';
 import { loadState } from '../utils/localstorage';
+import { statsReducer, STATS_TOTAL_TIME_INCREMENT, TIncrementTotalTime } from './stats/reducer';
 import {
   timerReducer,
   TIMER_SET_MODE,
@@ -42,19 +43,17 @@ export interface ITimer {
   time?: number;
 }
 
-export interface IStats {
-  [index: number]: {
-    timeStamp: number;
-    totalTime: number;
-    productiveTime: number;
-    pauseTime: number;
-    stops: number;
-  };
+export interface IDayStats {
+    date?: string;
+    totalTime?: number;
+    productiveTime?: number;
+    pauseTime?: number;
+    stops?: number;
 }
 
 export type TRootState = {
   todos?: ITodo[];
-  stats?: IStats;
+  stats?: IDayStats[];
   timer?: ITimer;
   themeMode?: EModes;
 };
@@ -87,7 +86,8 @@ type TMyActions =
   | TSwapTodosAction
   | TSetTimerMode
   | TSetTimerStatus
-  | TSetTimerTime;
+  | TSetTimerTime
+  | TIncrementTotalTime;
 
 export const rootReducer: Reducer<TRootState, TMyActions> = (
   state = initialState,
@@ -116,8 +116,14 @@ export const rootReducer: Reducer<TRootState, TMyActions> = (
         ...state,
         timer: timerReducer(state?.timer, action),
       };
+   
+    case STATS_TOTAL_TIME_INCREMENT:
+      return {
+        ...state,
+        stats: statsReducer(state?.stats, action),
+      };
 
-    default:
+    default: 
       return state;
   }
 };
