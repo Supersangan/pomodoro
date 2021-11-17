@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import styles from './timer.module.css';
 import { ReactComponent as IconPlus } from './iconPlus.svg';
 import { ReactComponent as IconMinus } from './iconMinus.svg';
@@ -7,13 +7,20 @@ import { secondsToTimeUnits } from '../../utils/secondsToTimeUnits';
 import { Units } from './Units';
 import { useDispatch, useSelector } from 'react-redux';
 import { ITodo, TRootState } from '../../store/reducer';
-import { actionProgressTodo } from '../../store/todos/reducer';
+import {
+  actionDeleteTodo,
+  actionProgressTodo,
+} from '../../store/todos/reducer';
 import classNames from 'classnames';
-import { actionSetTimerMode } from '../../store/timer/reducer';
+import {
+  actionSetTimerMode,
+  actionSetTimerStatus,
+  actionSetTimerTime,
+} from '../../store/timer/reducer';
 
 export enum ETimerModes {
   work = 'work',
-  rest = 'rest', 
+  rest = 'rest',
 }
 
 export enum ETimerStatuses {
@@ -28,14 +35,21 @@ export function Timer() {
 
   const dispatch = useDispatch();
 
-  const [status, setStatus] = useState<ETimerStatuses>(ETimerStatuses.initial);
-  
+  const status = useSelector<TRootState, ETimerStatuses>((state) => {
+    if (!state?.timer?.status) return ETimerStatuses.initial;
+    return state.timer.status;
+  });
+
   const mode = useSelector<TRootState, ETimerModes>((state) => {
     if (!state?.timer?.mode) return ETimerModes.work;
     return state.timer.mode;
   });
 
-  const [time, setTime] = useState<number>(mode === ETimerModes.work ? INITIAL_WORK_TIME : INITIAL_REST_TIME);
+  const time = useSelector<TRootState, number>((state) => {
+    if (!state?.timer?.time)
+      return mode === ETimerModes.work ? INITIAL_WORK_TIME : INITIAL_REST_TIME;
+    return state.timer.time;
+  });
 
   function getTodoActualIndex(todos: ITodo[]): number {
     let todoIndex: number = -1;
@@ -76,37 +90,39 @@ export function Timer() {
   function incrementTimer() {
     if (time < 3600) {
       if (time + 300 <= 3600) {
-        setTime(time + 300);
+        dispatch(actionSetTimerTime(time + 300));
       } else {
-        setTime(3600);
+        dispatch(actionSetTimerTime(3600));
       }
     }
   }
 
   function decrementTimer() {
     if (time - 300 > 0) {
-      setTime(time - 300);
+      dispatch(actionSetTimerTime(time - 300));
     }
   }
 
   function startTimer() {
-    setStatus(ETimerStatuses.inProgress);
+    dispatch(actionSetTimerStatus(ETimerStatuses.inProgress));
   }
 
   function resumeTimer() {
-    setStatus(ETimerStatuses.inProgress);
+    dispatch(actionSetTimerStatus(ETimerStatuses.inProgress));
   }
 
   function pauseTimer() {
-    setStatus(ETimerStatuses.paused);
+    dispatch(actionSetTimerStatus(ETimerStatuses.paused));
   }
 
   const countTimer = useCallback(() => {
-    if (todoIndex !== -1 && todoDone < todoCount) {
+    if (todoIndex !== -1 && todoDone < todoCount - 1) {
       dispatch(actionProgressTodo(todoId));
+    } else if (todoIndex !== -1 && todoDone === todoCount - 1) {
+      dispatch(actionDeleteTodo(todoId));
     }
 
-    setStatus(ETimerStatuses.initial);
+    dispatch(actionSetTimerStatus(ETimerStatuses.initial));
     dispatch(
       actionSetTimerMode(
         mode === ETimerModes.work ? ETimerModes.rest : ETimerModes.work
@@ -115,36 +131,38 @@ export function Timer() {
   }, [dispatch, todoIndex, todoId, todoCount, todoDone, mode]);
 
   function skipTimer() {
-    setStatus(ETimerStatuses.initial);
+    dispatch(actionSetTimerStatus(ETimerStatuses.initial));
     dispatch(
       actionSetTimerMode(
         mode === ETimerModes.work ? ETimerModes.rest : ETimerModes.work
       )
-    ); 
+    );
   }
 
   useEffect(() => {
-    setTime(mode === ETimerModes.work ? INITIAL_WORK_TIME : INITIAL_REST_TIME);
-  }, [mode, INITIAL_WORK_TIME, INITIAL_REST_TIME]);
+    dispatch(
+      actionSetTimerTime(
+        mode === ETimerModes.work ? INITIAL_WORK_TIME : INITIAL_REST_TIME
+      )
+    );
+  }, [mode, dispatch, INITIAL_WORK_TIME, INITIAL_REST_TIME]);
 
   useInterval(
     () => {
-      setTime((time) => time - 1);
+      dispatch(actionSetTimerTime(time - 1));
     },
     status === ETimerStatuses.inProgress ? 1000 : null
   );
-
-  useEffect(() => {
-    if (time === 0 && todoIndex !== -1 && todoDone < todoCount) {
-      dispatch(actionProgressTodo(todoId));
-    }
-  }, [time, dispatch, todoIndex, todoId, todoCount, todoDone]);
 
   useEffect(() => {
     if (time === 0) {
       countTimer();
     }
   }, [time, countTimer]);
+
+  useEffect(() => {
+    dispatch(actionSetTimerTime(time));
+  }, [time, dispatch]);
 
   return (
     <div className={styles.timer}>

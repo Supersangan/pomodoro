@@ -1,5 +1,5 @@
 import { ActionCreator, Reducer } from 'redux';
-import { ETimerModes } from '../../Pomodoro/Timer';
+import { ETimerModes, ETimerStatuses } from '../../Pomodoro/Timer';
 import { ITimer } from '../reducer';
 
 // SET MODE
@@ -15,7 +15,33 @@ export const actionSetTimerMode: ActionCreator<TSetTimerMode> = (mode) => ({
   mode,
 });
 
-type TTimerActions = TSetTimerMode;
+// SET STATUS
+export const TIMER_SET_STATUS = 'TIMER_SET_STATUS';
+
+export type TSetTimerStatus = {
+  type: typeof TIMER_SET_STATUS;
+  status: ETimerStatuses;
+};
+
+export const actionSetTimerStatus: ActionCreator<TSetTimerStatus> = (status) => ({
+  type: TIMER_SET_STATUS,
+  status,
+});
+
+// SET TIME
+export const TIMER_SET_TIME = 'TIMER_SET_TIME';
+
+export type TSetTimerTime = {
+  type: typeof TIMER_SET_TIME;
+  time: number;
+};
+
+export const actionSetTimerTime: ActionCreator<TSetTimerTime> = (time) => ({
+  type: TIMER_SET_TIME,
+  time,
+});
+
+type TTimerActions = TSetTimerMode | TSetTimerStatus | TSetTimerTime;
 
 export const timerReducer: Reducer<ITimer | undefined, TTimerActions> = (
   state,
@@ -26,6 +52,18 @@ export const timerReducer: Reducer<ITimer | undefined, TTimerActions> = (
       return {
         ...state,
         mode: action.mode,
+      };
+
+      case TIMER_SET_STATUS:
+      return {
+        ...state,
+        status: action.status,
+      };
+      
+      case TIMER_SET_TIME:
+      return {
+        ...state,
+        time: action.time,
       };
 
     default:
