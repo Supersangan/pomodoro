@@ -1,6 +1,6 @@
 import React from 'react';
 import { Header } from './Header';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Pomodoro } from './Pomodoro';
 import styles from './app.module.css';
 import { Stats } from './Stats';
@@ -25,7 +25,7 @@ store.subscribe(() => {
     timer: store.getState().timer,
     stats: store.getState().stats,
     themeMode: store.getState().themeMode || EModes.light,
-  }); 
+  });
 });
 
 function App() {
@@ -36,15 +36,11 @@ function App() {
 
         <main className={styles.main}>
           <div className="container">
-            <Switch>
-              <Route path="/stats">
-                <Stats />
-              </Route>
+            <Routes>
+              <Route path="/stats" element={<Stats />} />
 
-              <Route path="/">
-                <Pomodoro />
-              </Route>
-            </Switch>
+              <Route path="/" element={<Pomodoro />} />
+            </Routes>
           </div>
         </main>
 
