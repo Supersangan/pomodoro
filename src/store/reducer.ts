@@ -2,15 +2,27 @@ import { ActionCreator, Reducer } from 'redux';
 import { EModes } from '../Header/ThemesSwitcher';
 import { ETimerModes, ETimerStatuses } from '../Pomodoro/Timer';
 import { loadState } from '../utils/localstorage';
-import { statsReducer, STATS_TOTAL_TIME_INCREMENT, TIncrementTotalTime } from './stats/reducer';
+import {
+  statsReducer,
+  STATS_PAUSE_TIME_INCREMENT,
+  STATS_PRODUCTIVE_TIME_INCREMENT,
+  STATS_STOPS_INCREMENT,
+  STATS_TOTAL_TIME_INCREMENT,
+  TIncrementPauseTime,
+  TIncrementProductiveTime,
+  TIncrementStops,
+  TIncrementTotalTime,
+} from './stats/reducer';
 import {
   timerReducer,
   TIMER_SET_MODE,
   TIMER_SET_STATUS,
   TIMER_SET_TIME,
+  TIMER_SET_WORKING_TIME,
   TSetTimerMode,
   TSetTimerStatus,
   TSetTimerTime,
+  TSetTimerWorkingTime,
 } from './timer/reducer';
 import {
   TAddTodoAction,
@@ -41,14 +53,15 @@ export interface ITimer {
   mode?: ETimerModes;
   status?: ETimerStatuses;
   time?: number;
+  workingTime?: number;
 }
 
 export interface IDayStats {
-    date?: string;
-    totalTime?: number;
-    productiveTime?: number;
-    pauseTime?: number;
-    stops?: number;
+  date?: string;
+  totalTime?: number;
+  productiveTime?: number;
+  pauseTime?: number;
+  stops?: number;
 }
 
 export type TRootState = {
@@ -87,7 +100,12 @@ type TMyActions =
   | TSetTimerMode
   | TSetTimerStatus
   | TSetTimerTime
-  | TIncrementTotalTime;
+  | TSetTimerWorkingTime
+  | TIncrementTotalTime
+  | TIncrementProductiveTime
+  | TIncrementPauseTime
+  | TIncrementStops
+  ;
 
 export const rootReducer: Reducer<TRootState, TMyActions> = (
   state = initialState,
@@ -112,18 +130,22 @@ export const rootReducer: Reducer<TRootState, TMyActions> = (
     case TIMER_SET_MODE:
     case TIMER_SET_STATUS:
     case TIMER_SET_TIME:
+    case TIMER_SET_WORKING_TIME:
       return {
         ...state,
         timer: timerReducer(state?.timer, action),
       };
-   
+
     case STATS_TOTAL_TIME_INCREMENT:
+    case STATS_PRODUCTIVE_TIME_INCREMENT:
+    case STATS_PAUSE_TIME_INCREMENT:
+    case STATS_STOPS_INCREMENT:
       return {
         ...state,
         stats: statsReducer(state?.stats, action),
       };
 
-    default: 
+    default:
       return state;
   }
 };

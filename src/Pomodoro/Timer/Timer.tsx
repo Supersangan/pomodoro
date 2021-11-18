@@ -16,8 +16,14 @@ import {
   actionSetTimerMode,
   actionSetTimerStatus,
   actionSetTimerTime,
+  actionSetTimerWorkingTime,
 } from '../../store/timer/reducer';
-import { actionIncrementTotalTime } from '../../store/stats/reducer';
+import {
+  actionIncrementPauseTime,
+  actionIncrementProductiveTime,
+  actionIncrementStops,
+  actionIncrementTotalTime,
+} from '../../store/stats/reducer';
 import { getTodayDate } from '../../utils/getTodayDate';
 
 export enum ETimerModes {
@@ -29,7 +35,7 @@ export enum ETimerStatuses {
   initial = 'initial',
   inProgress = 'inProgress',
   paused = 'paused',
-} 
+}
 
 export function Timer() {
   const INITIAL_WORK_TIME = 25 * 60;
@@ -43,14 +49,19 @@ export function Timer() {
   });
 
   const mode = useSelector<TRootState, ETimerModes>((state) => {
-    if (!state?.timer?.mode) return ETimerModes.work;
+    if (state?.timer?.mode === undefined) return ETimerModes.work;
     return state.timer.mode;
   });
 
   const time = useSelector<TRootState, number>((state) => {
-    if (!state?.timer?.time)
+    if (state?.timer?.time === undefined)
       return mode === ETimerModes.work ? INITIAL_WORK_TIME : INITIAL_REST_TIME;
     return state.timer.time;
+  });
+
+  const workingTime = useSelector<TRootState, number>((state) => {
+    if (state?.timer?.workingTime === undefined) return 0;
+    return state.timer.workingTime;
   });
 
   function getTodoActualIndex(todos: ITodo[]): number {
@@ -70,17 +81,17 @@ export function Timer() {
   const todoIndex = getTodoActualIndex(todos);
 
   const todoId = useSelector<TRootState, string>((state) => {
-    if (!state?.todos) return '';
+    if (state?.todos === undefined) return '';
     return state?.todos[todoIndex]?.id;
   });
 
   const todoName = useSelector<TRootState, string>((state) => {
-    if (!state?.todos) return '';
+    if (state?.todos === undefined) return '';
     return state.todos[todoIndex]?.name;
   });
 
   const todoCount = useSelector<TRootState, number>((state) => {
-    if (!state?.todos) return 0;
+    if (state?.todos === undefined) return 0;
     return state.todos[todoIndex]?.count;
   });
 
@@ -119,8 +130,13 @@ export function Timer() {
 
   function stopTimer() {
     dispatch(actionSetTimerTime(INITIAL_WORK_TIME));
+    dispatch(actionSetTimerWorkingTime(0));
     dispatch(actionSetTimerStatus(ETimerStatuses.initial));
     dispatch(actionSetTimerMode(ETimerModes.work));
+    
+    if (mode === ETimerModes.work) {
+      dispatch(actionIncrementStops(getTodayDate()));
+    }
   }
 
   function skipTimer() {
@@ -130,50 +146,75 @@ export function Timer() {
         mode === ETimerModes.work ? ETimerModes.rest : ETimerModes.work
       )
     );
+
+    dispatch(
+      actionSetTimerTime(
+        mode === ETimerModes.work ? INITIAL_REST_TIME : INITIAL_WORK_TIME
+      )
+    );
   }
 
-  const countTimer = useCallback(() => {
+  function handleOnDone() {
+    dispatch(actionSetTimerTime(0));
+  }
+
+  const countPomodoro = useCallback(() => {
     if (todoIndex !== -1 && todoDone < todoCount - 1) {
       dispatch(actionProgressTodo(todoId));
     } else if (todoIndex !== -1 && todoDone === todoCount - 1) {
       dispatch(actionDeleteTodo(todoId));
     }
 
-    dispatch(actionSetTimerStatus(ETimerStatuses.initial));
-    dispatch(
-      actionSetTimerMode(
-        mode === ETimerModes.work ? ETimerModes.rest : ETimerModes.work
-      )
-    );
-  }, [dispatch, todoIndex, todoId, todoCount, todoDone, mode]);
-
-  useEffect(() => {
-    dispatch(
-      actionSetTimerTime(
-        mode === ETimerModes.work ? INITIAL_WORK_TIME : INITIAL_REST_TIME
-      )
-    );
-  }, [mode, dispatch, INITIAL_WORK_TIME, INITIAL_REST_TIME]);
+    dispatch(actionIncrementProductiveTime(getTodayDate(), workingTime));
+  }, [dispatch, todoIndex, todoId, todoCount, todoDone, workingTime]);
 
   useInterval(
     () => {
       dispatch(actionSetTimerTime(time - 1));
+
       if (mode === ETimerModes.work) {
-        dispatch(actionIncrementTotalTime(getTodayDate(), 1)); 
+        dispatch(actionIncrementTotalTime(getTodayDate(), 1));
+        dispatch(actionSetTimerWorkingTime(workingTime + 1));
       }
     },
     status === ETimerStatuses.inProgress ? 1000 : null
   );
 
-  useEffect(() => {
-    if (time === 0) {
-      countTimer();
-    }
-  }, [time, countTimer]);
+  useInterval(
+    () => {
+      dispatch(actionIncrementPauseTime(getTodayDate(), 1));
+    },
+    status === ETimerStatuses.paused && mode === ETimerModes.work ? 1000 : null
+  );
 
   useEffect(() => {
-    dispatch(actionSetTimerTime(time));
-  }, [time, dispatch]);
+    if (time === 0) {
+      dispatch(
+        actionSetTimerTime(
+          mode === ETimerModes.work ? INITIAL_REST_TIME : INITIAL_WORK_TIME
+        )
+      );
+
+      dispatch(
+        actionSetTimerMode(
+          mode === ETimerModes.work ? ETimerModes.rest : ETimerModes.work
+        )
+      );
+
+      dispatch(actionSetTimerStatus(ETimerStatuses.initial));
+
+      if (mode === ETimerModes.work) {
+        countPomodoro();
+      }
+    }
+  }, [
+    time,
+    dispatch,
+    countPomodoro,
+    mode,
+    INITIAL_WORK_TIME,
+    INITIAL_REST_TIME,
+  ]);
 
   return (
     <div className={styles.timer}>
@@ -300,7 +341,7 @@ export function Timer() {
                 styles.button,
                 styles.button_orange
               )}
-              onClick={countTimer}
+              onClick={handleOnDone}
             >
               Сделано
             </button>

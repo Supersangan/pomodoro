@@ -41,12 +41,25 @@ export const actionSetTimerTime: ActionCreator<TSetTimerTime> = (time) => ({
   time,
 });
 
-type TTimerActions = TSetTimerMode | TSetTimerStatus | TSetTimerTime;
+// SET WORKING TIME
+export const TIMER_SET_WORKING_TIME = 'TIMER_SET_WORKING_TIME';
+
+export type TSetTimerWorkingTime = {
+  type: typeof TIMER_SET_WORKING_TIME;
+  workingTime: number;
+};
+
+export const actionSetTimerWorkingTime: ActionCreator<TSetTimerWorkingTime> = (workingTime) => ({
+  type: TIMER_SET_WORKING_TIME,
+  workingTime,
+});
+
+type TTimerActions = TSetTimerMode | TSetTimerStatus | TSetTimerTime | TSetTimerWorkingTime;
 
 export const timerReducer: Reducer<ITimer | undefined, TTimerActions> = (
   state,
   action
-) => {
+) => {  
   switch (action.type) {
     case TIMER_SET_MODE:
       return {
@@ -64,6 +77,12 @@ export const timerReducer: Reducer<ITimer | undefined, TTimerActions> = (
       return {
         ...state,
         time: action.time,
+      };
+
+      case TIMER_SET_WORKING_TIME:
+      return {
+        ...state,
+        workingTime: action.workingTime,
       };
 
     default:
