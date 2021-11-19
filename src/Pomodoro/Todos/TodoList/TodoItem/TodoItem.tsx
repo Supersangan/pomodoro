@@ -20,25 +20,24 @@ export interface ITodoItemProps {
 }
 
 export function TodoItem({ todo }: ITodoItemProps) {
-  const [nameEditable, setNameEditable] = useState(false);
+  const [nameEditable, setNameEditable] = useState<boolean>(false);
+  const [name, setName] = useState<string>(todo.name);
   const dispatch = useDispatch();
 
   const nameRef = createRef<HTMLInputElement>();
 
-  function incrementTodo(id: string) {
-    dispatch(actionIncrementTodo(id));
+  function incrementTodo() {
+    dispatch(actionIncrementTodo(todo.id));
   }
 
-  function decrementTodo(id: string) {
-    dispatch(actionDecrementTodo(id));
+  function decrementTodo() {
+    if (todo.count > 1) {
+      dispatch(actionDecrementTodo(todo.id));
+    }
   }
 
-  function renameTodo(id: string, name: string) {
-    dispatch(actionRenameTodo(id, name));
-  }
-
-  function deleteTodo(id: string) {
-    dispatch(actionDeleteTodo(id));
+  function deleteTodo() {
+    dispatch(actionDeleteTodo(todo.id));
   }
 
   function editTodo(): void {
@@ -54,9 +53,13 @@ export function TodoItem({ todo }: ITodoItemProps) {
     }
   }, [nameRef, nameEditable]);
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>): void {
-    renameTodo(todo.id, e.currentTarget.value);
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>): void {
+    setName(event?.currentTarget.value);
   }
+
+  useEffect(() => {
+    dispatch(actionRenameTodo(todo.id, name));
+  }, [name]);
 
   function handleBlur(): void {
     setNameEditable(false);
@@ -104,19 +107,10 @@ export function TodoItem({ todo }: ITodoItemProps) {
         >
           <Menu
             count={todo.count}
-            incrementTodo={() => {
-              incrementTodo(todo.id);
-            }}
-            decrementTodo={() => {
-              decrementTodo(todo.id);
-            }}
+            incrementTodo={incrementTodo}
+            decrementTodo={decrementTodo}
             editTodo={editTodo}
-            renameTodo={() => {
-              decrementTodo(todo.id);
-            }}
-            deleteTodo={() => {
-              deleteTodo(todo.id);
-            }}
+            deleteTodo={deleteTodo}
           />
         </Dropdown>
       </div>

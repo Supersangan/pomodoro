@@ -20,10 +20,11 @@ import {
 } from '../../store/timer/reducer';
 import {
   actionIncrementPauseTime,
+  actionIncrementPomodoros,
   actionIncrementProductiveTime,
   actionIncrementStops,
   actionIncrementTotalTime,
-} from '../../store/stats/reducer';
+} from '../../store/statsData/reducer';
 import { getTodayDate } from '../../utils/getTodayDate';
 
 export enum ETimerModes {
@@ -165,6 +166,7 @@ export function Timer() {
       dispatch(actionDeleteTodo(todoId));
     }
 
+    dispatch(actionIncrementPomodoros(getTodayDate()));
     dispatch(actionIncrementProductiveTime(getTodayDate(), workingTime));
   }, [dispatch, todoIndex, todoId, todoCount, todoDone, workingTime]);
 

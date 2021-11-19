@@ -24,6 +24,7 @@ store.subscribe(() => {
     todos: store.getState().todos,
     timer: store.getState().timer,
     stats: store.getState().stats,
+    statsData: store.getState().statsData,
     themeMode: store.getState().themeMode || EModes.light,
   });
 });

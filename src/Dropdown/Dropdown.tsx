@@ -76,6 +76,7 @@ export function Dropdown({
           left={left}
           top={top}
           width={width}
+          buttonRef={ref}
         />
       )}
     </div>

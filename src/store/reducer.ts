@@ -4,15 +4,17 @@ import { ETimerModes, ETimerStatuses } from '../Pomodoro/Timer';
 import { loadState } from '../utils/localstorage';
 import {
   statsReducer,
-  STATS_PAUSE_TIME_INCREMENT,
-  STATS_PRODUCTIVE_TIME_INCREMENT,
-  STATS_STOPS_INCREMENT,
-  STATS_TOTAL_TIME_INCREMENT,
+  STATS_DATA_PAUSE_TIME_INCREMENT,
+  STATS_DATA_POMODOROS_INCREMENT,
+  STATS_DATA_PRODUCTIVE_TIME_INCREMENT,
+  STATS_DATA_STOPS_INCREMENT,
+  STATS_DATA_TOTAL_TIME_INCREMENT,
   TIncrementPauseTime,
+  TIncrementPomodoros,
   TIncrementProductiveTime,
   TIncrementStops,
   TIncrementTotalTime,
-} from './stats/reducer';
+} from './statsData/reducer';
 import {
   timerReducer,
   TIMER_SET_MODE,
@@ -56,17 +58,24 @@ export interface ITimer {
   workingTime?: number;
 }
 
+export interface IStats {
+  date?: string;
+  week?: number;
+}
+
 export interface IDayStats {
   date?: string;
   totalTime?: number;
   productiveTime?: number;
   pauseTime?: number;
+  pomodoros?: number; 
   stops?: number;
 }
 
 export type TRootState = {
   todos?: ITodo[];
-  stats?: IDayStats[];
+  stats?: IStats;
+  statsData?: IDayStats[];
   timer?: ITimer;
   themeMode?: EModes;
 };
@@ -105,6 +114,7 @@ type TMyActions =
   | TIncrementProductiveTime
   | TIncrementPauseTime
   | TIncrementStops
+  | TIncrementPomodoros
   ;
 
 export const rootReducer: Reducer<TRootState, TMyActions> = (
@@ -136,13 +146,14 @@ export const rootReducer: Reducer<TRootState, TMyActions> = (
         timer: timerReducer(state?.timer, action),
       };
 
-    case STATS_TOTAL_TIME_INCREMENT:
-    case STATS_PRODUCTIVE_TIME_INCREMENT:
-    case STATS_PAUSE_TIME_INCREMENT:
-    case STATS_STOPS_INCREMENT:
+    case STATS_DATA_TOTAL_TIME_INCREMENT:
+    case STATS_DATA_PRODUCTIVE_TIME_INCREMENT:
+    case STATS_DATA_PAUSE_TIME_INCREMENT:
+    case STATS_DATA_STOPS_INCREMENT:
+    case STATS_DATA_POMODOROS_INCREMENT:
       return {
         ...state,
-        stats: statsReducer(state?.stats, action),
+        statsData: statsReducer(state?.statsData, action),
       };
 
     default:

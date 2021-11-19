@@ -1,7 +1,31 @@
+import classNames from 'classnames';
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { IDayStats, TRootState } from '../../../store/reducer';
 import styles from './infographic.module.css';
 
-export function Infographic() {
+interface IInfographicProps {
+  statsData?: IDayStats[];
+}
+
+export function Infographic({ statsData = [] }: IInfographicProps) {
+  const statsWeek = useSelector<TRootState, number>((state) => {
+    if (state?.stats?.week === undefined) return 0;
+    return state.stats.week;
+  });
+
+  const statsColumns = [
+    { name: 'Пн', percentage: 0 },
+    { name: 'Вт', percentage: 0 },
+    { name: 'Ср', percentage: 0 },
+    { name: 'Чт', percentage: 0 },
+    { name: 'Пт', percentage: 38 },
+    { name: 'Сб', percentage: 0 },
+    { name: 'Вс', percentage: 0 },
+  ];
+
+  const activeDayIndex = 1;
+
   return (
     <div className={styles.root}>
       <div className={styles.body}>
@@ -43,50 +67,36 @@ export function Infographic() {
         </div>
 
         <div className={styles.columns}>
-          <div className={styles.column}>
-            <div
-              className={`${styles.columnValue} ${styles.columnValue_active}`}
-              style={{ height: '40%' }}
-            ></div>
-          </div>
-
-          <div className={styles.column}>
-            <div className={styles.columnValue} style={{ height: '75%' }}></div>
-          </div>
-
-          <div className={styles.column}>
-            <div className={styles.columnValue} style={{ height: '50%' }}></div>
-          </div>
-
-          <div className={styles.column}>
-            <div className={styles.columnValue} style={{ height: '93%' }}></div>
-          </div>
-
-          <div className={styles.column}>
-            <div className={styles.columnValue} style={{ height: '80%' }}></div>
-          </div>
-
-          <div className={styles.column}>
-            <div className={styles.columnValue} style={{ height: '15%' }}></div>
-          </div>
-
-          <div className={styles.column}>
-            <div
-              className={`${styles.columnValue} ${styles.columnValue_passive}`}
-            ></div>
-          </div>
+          {statsColumns.map((day, i) => (
+            <div className={styles.column} key={day.name}>
+              <div
+                className={classNames(
+                  styles.columnValue,
+                  i === activeDayIndex && styles.column_active,
+                  day.percentage === 0 && styles.columnValue_passive
+                )}
+                style={{
+                  height: day.percentage > 0 ? `${day.percentage}%` : '',
+                }}
+              ></div>
+            </div>
+          ))}
         </div>
       </div>
 
       <div className={styles.footer}>
         <div className={styles.columns}>
-          <div className={`${styles.column} ${styles.column_active}`}>Пн</div>
-          <div className={styles.column}>Вт</div>
-          <div className={styles.column}>Ср</div>
-          <div className={styles.column}>Чт</div>
-          <div className={styles.column}>Пт</div>
-          <div className={styles.column}>Сб</div>
-          <div className={styles.column}>Вс</div>
+          {statsColumns.map((day, i) => (
+            <div
+              className={classNames(
+                styles.column,
+                i === activeDayIndex && styles.column_active
+              )}
+              key={day.name}
+            >
+              {day.name}
+            </div>
+          ))}
         </div>
       </div>
     </div>

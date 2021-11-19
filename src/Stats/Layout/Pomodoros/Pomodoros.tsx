@@ -2,17 +2,26 @@ import React from 'react';
 import styles from './pomodoros.module.css';
 import { ReactComponent as IconPomodoro } from './iconPomodoro.svg';
 import { ReactComponent as IconPomodoroFaced } from './iconPomodoroFaced.svg';
+import { pomodorosToStr } from '../../../utils/pomodorosToStr';
 
-export function Pomodoros() {
+interface IPomodorosProps {
+  count?: number;
+}
+
+export function Pomodoros({ count = 0 }: IPomodorosProps) {
   return (
     <div className={styles.root}>
-      <IconPomodoroFaced />
+      {count === 0 ? (
+        <IconPomodoroFaced />
+      ) : (
+        <div className={styles.content}>
+          <IconPomodoro /> x {count}
+        </div>
+      )}
 
-      <div className={styles.content}>
-        <IconPomodoro /> x 2
-      </div>
-
-      <div className={styles.footer}>2 помидора</div>
+      {count > 0 && (
+        <div className={styles.footer}>{pomodorosToStr(count)}</div>
+      )}
     </div>
   );
 }

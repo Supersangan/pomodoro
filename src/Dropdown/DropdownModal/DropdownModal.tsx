@@ -9,6 +9,7 @@ interface IDropDownModalProps {
   left: number;
   top: number;
   width: number;
+  buttonRef: React.RefObject<HTMLDivElement>;
 }
 
 export function DropdownModal({
@@ -18,12 +19,13 @@ export function DropdownModal({
   left,
   top,
   width,
+  buttonRef,
 }: IDropDownModalProps) {
   const node = document.querySelector('#dropdownModal_root');
   const ref = useRef<HTMLDivElement>(null);
 
-  function handleClick(e: React.MouseEvent<HTMLDivElement>) {
-    const target = e.target as HTMLElement;
+  function handleClick(event: React.MouseEvent<HTMLDivElement>) {
+    const target = event.target as HTMLElement;
 
     if (target.closest('button')?.dataset.notCloser) {
       return;
@@ -31,12 +33,13 @@ export function DropdownModal({
       setIsDropdownOpen(false);
     }
   }
-  
+
   useEffect(() => {
-    function handleClick(event: MouseEvent) {
+    function handleClick(event: MouseEvent) {   
       if (
         event.target instanceof Node &&
         !ref.current?.contains(event.target)
+        && !buttonRef.current?.contains(event.target) 
       ) {
         onClose?.();
       }

@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './todolist.module.css';
 import { TodoItem } from './TodoItem';
-import { ESecondsToStrFloor, secondsToStr } from '../../../utils/secondsToStr';
+import { secondsToStr } from '../../../utils/secondsToStr';
 import {
   closestCenter,
   DndContext,
@@ -43,7 +43,8 @@ export function TodoList() {
 
   const summaryTime = secondsToStr(
     summaryCount * TIME * 60,
-    ESecondsToStrFloor.s
+    's',
+    'normal'
   );
 
   const sensor = [

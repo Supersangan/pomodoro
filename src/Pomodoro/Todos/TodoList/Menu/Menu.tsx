@@ -10,7 +10,6 @@ export interface IMenuProps {
   incrementTodo: () => void;
   decrementTodo: () => void;
   editTodo: () => void;
-  renameTodo: () => void;
   deleteTodo: () => void;
 }
 
