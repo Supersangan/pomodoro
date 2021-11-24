@@ -59,7 +59,7 @@ export function TodoItem({ todo }: ITodoItemProps) {
 
   useEffect(() => {
     dispatch(actionRenameTodo(todo.id, name));
-  }, [name]);
+  }, [name, todo.id, dispatch]);
 
   function handleBlur(): void {
     setNameEditable(false);
