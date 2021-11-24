@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './todolist.module.css';
 import { TodoItem } from './TodoItem';
 import { secondsToStr } from '../../../utils/secondsToStr';
@@ -17,36 +17,65 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ITodo, TRootState } from '../../../store/reducer';
 import { actionSwapTodos } from '../../../store/todos/reducer';
 import { useTransition, animated } from 'react-spring';
+import { ETimerModes } from '../../Timer';
 
-const TIME = 25;
+const TIME = 25 * 60;
 
 export function TodoList() {
-  const todos =
-    useSelector<TRootState, ITodo[]>((state) => {
-      if (!state?.todos) return [];
+  const todos = useSelector<TRootState, ITodo[]>((state) => {
+    if (!state?.todos) return [];
 
-      const todos = state.todos.filter((todo) => {
-        return todo.done < todo.count;
-      });
-      
-      return todos;
+    const todos = state.todos.filter((todo) => {
+      return todo.done < todo.count;
     });
 
+    return todos;
+  });
+
+  const mode = useSelector<TRootState, ETimerModes>((state) => {
+    if (state?.timer?.mode === undefined) return ETimerModes.work;
+    return state.timer.mode;
+  });
+
+  const time = useSelector<TRootState, number>((state) => {
+    if (state?.timer?.time === undefined) return 0;
+    return state.timer.time;
+  });
+
+  const [diff, setDiff] = useState<number>(
+    mode === ETimerModes.work ? time - TIME : 0
+  );
   const dispatch = useDispatch();
 
-  const summaryCount = todos.reduce(
-    (summaryTime: number, todo: ITodo): number => {
-      return summaryTime + todo.count;
-    },
-    0
+  const [summaryCount, setSummaryCount] = useState(
+    todos.reduce((summaryCount: number, todo: ITodo): number => {
+      return summaryCount + todo.count - todo.done;
+    }, 0)
+  );
+  const [summaryTime, setSummaryTime] = useState(summaryCount > 0 ? summaryCount * TIME + diff : 0);
+  const [summaryTimeStr, setSummaryTimeStr] = useState(
+    secondsToStr(summaryCount > 0 ? summaryCount * TIME + diff : 0)
   );
 
-  const summaryTime = secondsToStr(
-    summaryCount * TIME * 60,
-    's',
-    'normal'
-  );
+  useEffect(() => {
+    setDiff(mode === ETimerModes.work ? time - TIME : 0);
+  }, [time, mode]);
 
+  useEffect(() => {
+    setSummaryCount(
+      todos.reduce((summaryCount: number, todo: ITodo): number => {
+        return summaryCount + todo.count - todo.done;
+      }, 0)
+    );
+  }, [todos]);
+
+  useEffect(() => {    
+    const summaryTime = summaryCount > 0 ? summaryCount * TIME + diff : 0;
+
+    setSummaryTime(summaryTime);
+    setSummaryTimeStr(secondsToStr(summaryTime, 's', 'normal'));
+  }, [diff, summaryCount]);
+ 
   const sensor = [
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -95,7 +124,9 @@ export function TodoList() {
         </ul>
       </DndContext>
 
-      <span className={styles.total}>{summaryTime}</span>
+      {summaryTime > 0 && (
+        <span className={styles.total}>{summaryTimeStr}</span>
+      )}
     </>
   );
 }
