@@ -26,6 +26,7 @@ import {
   actionIncrementTotalTime,
 } from '../../store/statsData/reducer';
 import { dateToString } from '../../utils/dateToString';
+import { sendNotification } from '../../utils/sendNotification';
 
 export enum ETimerModes {
   work = 'work',
@@ -134,7 +135,7 @@ export function Timer() {
     dispatch(actionSetTimerWorkingTime(0));
     dispatch(actionSetTimerStatus(ETimerStatuses.initial));
     dispatch(actionSetTimerMode(ETimerModes.work));
-    
+
     if (mode === ETimerModes.work) {
       dispatch(actionIncrementStops(dateToString(new Date())));
     }
@@ -156,7 +157,23 @@ export function Timer() {
   }
 
   function handleOnDone() {
-    dispatch(actionSetTimerTime(0));
+    countPomodoro();
+
+    dispatch(
+      actionSetTimerTime(
+        mode === ETimerModes.work ? INITIAL_REST_TIME : INITIAL_WORK_TIME
+      )
+    );
+
+    dispatch(actionSetTimerWorkingTime(0));
+
+    dispatch(
+      actionSetTimerMode(
+        mode === ETimerModes.work ? ETimerModes.rest : ETimerModes.work
+      )
+    );
+
+    dispatch(actionSetTimerStatus(ETimerStatuses.initial));
   }
 
   const countPomodoro = useCallback(() => {
@@ -167,17 +184,19 @@ export function Timer() {
     }
 
     dispatch(actionIncrementPomodoros(dateToString(new Date())));
-    dispatch(actionIncrementProductiveTime(dateToString(new Date()), workingTime));
+    dispatch(
+      actionIncrementProductiveTime(dateToString(new Date()), workingTime)
+    );
   }, [dispatch, todoIndex, todoId, todoCount, todoDone, workingTime]);
 
   useInterval(
     () => {
-      dispatch(actionSetTimerTime(time - 1));
-
       if (mode === ETimerModes.work) {
         dispatch(actionIncrementTotalTime(dateToString(new Date()), 1));
         dispatch(actionSetTimerWorkingTime(workingTime + 1));
       }
+
+      dispatch(actionSetTimerTime(time - 1));
     },
     status === ETimerStatuses.inProgress ? 1000 : null
   );
@@ -197,6 +216,8 @@ export function Timer() {
         )
       );
 
+      dispatch(actionSetTimerWorkingTime(0));
+
       dispatch(
         actionSetTimerMode(
           mode === ETimerModes.work ? ETimerModes.rest : ETimerModes.work
@@ -208,6 +229,10 @@ export function Timer() {
       if (mode === ETimerModes.work) {
         countPomodoro();
       }
+
+      sendNotification('Таймер остановлен', {
+        body: `Пора ${mode === ETimerModes.work ? 'отдохнуть' : 'поработать'}`,
+      });
     }
   }, [
     time,
