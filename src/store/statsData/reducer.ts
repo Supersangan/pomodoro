@@ -83,14 +83,14 @@ export const actionIncrementPomodoros: ActionCreator<TIncrementPomodoros> = (
   date,
 });
 
-export type TStatsActions =
+export type TStatsDataActions =
   | TIncrementTotalTime
   | TIncrementProductiveTime
   | TIncrementPauseTime
   | TIncrementStops
   | TIncrementPomodoros;
 
-export const statsReducer: Reducer<IDayStats[] | undefined, TStatsActions> = (
+export const statsDataReducer: Reducer<IDayStats[] | undefined, TStatsDataActions> = (
   state = [],
   action
 ) => {

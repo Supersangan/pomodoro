@@ -9,6 +9,8 @@ interface IDailyProps {
 }
 
 export function Daily({ day, totalTime }: IDailyProps) {
+  console.log(day);
+  
   return (
     <div className={styles.root}>
       <h3 className={styles.heading}>{getFullDayName(day)}</h3>

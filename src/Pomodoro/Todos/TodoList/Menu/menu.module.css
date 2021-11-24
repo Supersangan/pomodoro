@@ -6,6 +6,7 @@
   list-style: none;
   color: var(--font-main-inv);
   background-color: var(--bg-main-inv);
+  box-shadow: 0px 10px 63px var(--gray-90-inv);
 }
 
 .list::before,

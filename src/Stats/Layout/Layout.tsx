@@ -8,34 +8,48 @@ import { ReactComponent as IconFocus } from './iconFocus.svg';
 import { ReactComponent as IconClock } from './iconClock.svg';
 import { ReactComponent as IconStop } from './iconStop.svg';
 import { IDayStats, TRootState } from '../../store/reducer';
-import { getTodayDate } from '../../utils/getTodayDate';
 import { useSelector } from 'react-redux';
 import { secondsToStr } from '../../utils/secondsToStr';
+import { dateToString } from '../../utils/dateToString';
+import { getStatsValue } from '../../utils/getStatsValue';
 
 export function Layout() {
-  const date = useSelector<TRootState, string>((state) => {
-    if (state?.stats?.date === undefined) return getTodayDate();
-    return state.stats.date;
+  const weekIndex = useSelector<TRootState, number>((state) => {
+    if (state?.stats?.weekIndex === undefined) return 0;
+    return state.stats.weekIndex;
   });
+
+  const dayIndex = useSelector<TRootState, number>((state) => {
+    if (state?.stats?.dayIndex === undefined) return new Date().getDay();
+    return state.stats.dayIndex;
+  });
+
+  function getDate(weekIndex: number, dayIndex: number): string {
+    const d = new Date();
+    const day = d.getDay();
+    const diff = d.getDate() - (day - dayIndex - 1);
+    const weekOffset = 7 * weekIndex    
+
+    return dateToString(new Date(d.setDate(diff - weekOffset)));
+  }
+
+  const date = getDate(weekIndex, dayIndex);
+  console.log(date); 
+  
 
   const statsData = useSelector<TRootState, IDayStats[]>((state) => {
     if (state?.statsData === undefined) return [];
     return state?.statsData;
   });
 
-  function getStatsValue<T extends keyof IDayStats>(value: T): IDayStats[T] {
-    for (const dayStats of statsData) {
-      if (dayStats?.date === date && dayStats?.[value] !== undefined)
-        return dayStats?.[value];
-    }
-  }
-
-  const pomodoros = getStatsValue('pomodoros');
-  const totalTime = getStatsValue('totalTime') || 0;
-  const productiveTime = getStatsValue('productiveTime') || 0;
-  const day = new Date(date).getDay();
-  const stops = (getStatsValue('stops') || 0).toString();
-  const focus = Math.floor((productiveTime / totalTime) * 100);
+  const pomodoros: number = getStatsValue(statsData, date, 'pomodoros') || 0;
+  const totalTime: number = getStatsValue(statsData, date, 'totalTime') || 0;
+  const pauseTime: number = getStatsValue(statsData, date, 'pauseTime') || 0;
+  const productiveTime: number = getStatsValue(statsData, date, 'productiveTime') || 0;
+  const day: number = new Date(date).getDay();
+  const stops: number = getStatsValue(statsData, date, 'stops') || 0;
+  const focus: number =
+    totalTime > 0 ? Math.floor((productiveTime / totalTime) * 100) : 0;
 
   return (
     <div className={styles.root}>
@@ -44,7 +58,7 @@ export function Layout() {
       </div>
 
       <div className={`${styles.infographic} ${styles.gridItem}`}>
-        <Infographic statsData={statsData}/>
+        <Infographic />
       </div>
 
       <div className={`${styles.pomodoros} ${styles.gridItem}`}>
@@ -64,7 +78,7 @@ export function Layout() {
         <Banner
           title={'Время на паузе'}
           icon={<IconClock />}
-          text={secondsToStr(totalTime, 's', 'short')}
+          text={secondsToStr(pauseTime, 's', 'short')}
           bg={EBannerBgs.purple}
         />
       </div>
@@ -73,7 +87,7 @@ export function Layout() {
         <Banner
           title={'Остановки'}
           icon={<IconStop />}
-          text={stops}
+          text={`${stops}`}
           bg={EBannerBgs.blue}
         />
       </div>

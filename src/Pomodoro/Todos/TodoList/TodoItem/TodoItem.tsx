@@ -78,7 +78,7 @@ export function TodoItem({ todo }: ITodoItemProps) {
       className={styles.root}
       {...attributes}
       {...listeners}
-      style={style}
+      style={style} 
       ref={setNodeRef}
     >
       <button className={styles.button}>

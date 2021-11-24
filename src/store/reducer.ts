@@ -4,6 +4,13 @@ import { ETimerModes, ETimerStatuses } from '../Pomodoro/Timer';
 import { loadState } from '../utils/localstorage';
 import {
   statsReducer,
+  STATS_SET_DAY_INDEX,
+  STATS_SET_WEEK_INDEX,
+  TSetDayIndex,
+  TSetWeekIndex,
+} from './stats/reducer';
+import {
+  statsDataReducer,
   STATS_DATA_PAUSE_TIME_INCREMENT,
   STATS_DATA_POMODOROS_INCREMENT,
   STATS_DATA_PRODUCTIVE_TIME_INCREMENT,
@@ -59,8 +66,8 @@ export interface ITimer {
 }
 
 export interface IStats {
-  date?: string;
-  week?: number;
+  dayIndex?: number;
+  weekIndex?: number;
 }
 
 export interface IDayStats {
@@ -68,7 +75,7 @@ export interface IDayStats {
   totalTime?: number;
   productiveTime?: number;
   pauseTime?: number;
-  pomodoros?: number; 
+  pomodoros?: number;
   stops?: number;
 }
 
@@ -115,7 +122,8 @@ type TMyActions =
   | TIncrementPauseTime
   | TIncrementStops
   | TIncrementPomodoros
-  ;
+  | TSetDayIndex
+  | TSetWeekIndex;
 
 export const rootReducer: Reducer<TRootState, TMyActions> = (
   state = initialState,
@@ -153,7 +161,14 @@ export const rootReducer: Reducer<TRootState, TMyActions> = (
     case STATS_DATA_POMODOROS_INCREMENT:
       return {
         ...state,
-        statsData: statsReducer(state?.statsData, action),
+        statsData: statsDataReducer(state?.statsData, action),
+      };
+
+    case STATS_SET_WEEK_INDEX:
+    case STATS_SET_DAY_INDEX:
+      return {
+        ...state,
+        stats: statsReducer(state?.stats, action),
       };
 
     default:

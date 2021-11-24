@@ -50,7 +50,7 @@ export function DropdownModal({
     return () => {
       document.removeEventListener('click', handleClick);
     };
-  }, [onClose]);
+  }, [onClose, buttonRef]);
 
   if (!node) return null;
 

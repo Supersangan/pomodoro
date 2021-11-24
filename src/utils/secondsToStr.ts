@@ -82,7 +82,7 @@ export function secondsToStr(
     if (floor === 'm') return timeStr.trim();
   }
 
-  if (seconds) {
+  if (seconds || (!hours && !minutes)) {
     let secondsWord: string;
 
     switch (lengthCase) {
@@ -112,7 +112,6 @@ export function secondsToStr(
     }
 
     timeStr += `${seconds}\u00A0${secondsWord}${secondsEnding} `;
-    if (floor === 's') return timeStr.trim();
   }
 
   return timeStr.trim();

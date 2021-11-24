@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100%;
+  padding-top: 32px;
 }
 
 .body {
@@ -15,7 +16,7 @@
 .linesContainer {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: stretch;
   position: absolute;
   width: 100%;
@@ -25,18 +26,18 @@
 .lineWrapper {
   display: flex;
   align-items: center;
+  height: 0;
 }
 
 .line {
   height: 1px;
   flex-grow: 1;
-  background-color: var(--gray-33);
-  opacity: 0.2;
+  background-color: var(--gray-c4);
 }
 
 .lineTitle {
   width: 100px;
-  padding: 0 20px;
+  padding-left: 10px;
   font-size: 12px;
 }
 
@@ -55,6 +56,7 @@
   justify-content: center;
   align-items: center;
   flex-grow: 1;
+  position: relative;
   height: 100%;
   color: var(--font-light);
 }
@@ -71,7 +73,27 @@
   transition: background-color 0.3s ease;
 }
 
-.columnValue:hover {
+.columnValue:after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gray-c4);
+  opacity: 0;
+  transition: opacity;
+}
+
+.column:hover .columnValue:after {
+  opacity: .2;
+}
+
+.column:hover .columnValue,
+.column:hover .columnValue.columnValue_active,
+.column:hover .columnValue.columnValue_zero,
+.column:hover .columnValue.columnValue_zero.columnValue_active {
   background-color: var(--orange);
 }
 
@@ -79,17 +101,13 @@
   background-color: var(--orange-bright);
 }
 
-.columnValue.columnValue_active:hover {
-  background-color: var(--orange);
-}
-
-.columnValue.columnValue_passive {
+.columnValue.columnValue_zero {
   height: 1.5%;
   background-color: var(--gray-c4);
 }
 
-.columnValue.columnValue_passive:hover {
-  background-color: var(--orange);
+.columnValue.columnValue_zero.columnValue_active {
+  background-color: var(--orange-bright);
 }
 
 .footer {

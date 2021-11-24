@@ -25,7 +25,7 @@ import {
   actionIncrementStops,
   actionIncrementTotalTime,
 } from '../../store/statsData/reducer';
-import { getTodayDate } from '../../utils/getTodayDate';
+import { dateToString } from '../../utils/dateToString';
 
 export enum ETimerModes {
   work = 'work',
@@ -136,7 +136,7 @@ export function Timer() {
     dispatch(actionSetTimerMode(ETimerModes.work));
     
     if (mode === ETimerModes.work) {
-      dispatch(actionIncrementStops(getTodayDate()));
+      dispatch(actionIncrementStops(dateToString(new Date())));
     }
   }
 
@@ -166,8 +166,8 @@ export function Timer() {
       dispatch(actionDeleteTodo(todoId));
     }
 
-    dispatch(actionIncrementPomodoros(getTodayDate()));
-    dispatch(actionIncrementProductiveTime(getTodayDate(), workingTime));
+    dispatch(actionIncrementPomodoros(dateToString(new Date())));
+    dispatch(actionIncrementProductiveTime(dateToString(new Date()), workingTime));
   }, [dispatch, todoIndex, todoId, todoCount, todoDone, workingTime]);
 
   useInterval(
@@ -175,7 +175,7 @@ export function Timer() {
       dispatch(actionSetTimerTime(time - 1));
 
       if (mode === ETimerModes.work) {
-        dispatch(actionIncrementTotalTime(getTodayDate(), 1));
+        dispatch(actionIncrementTotalTime(dateToString(new Date()), 1));
         dispatch(actionSetTimerWorkingTime(workingTime + 1));
       }
     },
@@ -184,7 +184,7 @@ export function Timer() {
 
   useInterval(
     () => {
-      dispatch(actionIncrementPauseTime(getTodayDate(), 1));
+      dispatch(actionIncrementPauseTime(dateToString(new Date()), 1));
     },
     status === ETimerStatuses.paused && mode === ETimerModes.work ? 1000 : null
   );
