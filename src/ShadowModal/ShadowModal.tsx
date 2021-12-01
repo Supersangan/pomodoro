@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import styles from './shadowmodal.module.css';
 
@@ -8,7 +8,7 @@ interface IShadowModalProps {
 }
 
 export function ShadowModal({ setIsConfirmOpen, children }: IShadowModalProps) {
-  const node = document.createElement('div');
+  const node = useMemo(() => document.createElement('div'), []);
   const ref = useRef<HTMLDivElement>(null);
 
   function handleClick(event: React.SyntheticEvent<HTMLDivElement>) {
