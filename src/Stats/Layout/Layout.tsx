@@ -20,7 +20,10 @@ export function Layout() {
   });
 
   const dayIndex = useSelector<TRootState, number>((state) => {
-    if (state?.stats?.dayIndex === undefined) return new Date().getDay();
+    if (state?.stats?.dayIndex === undefined) {
+      const day = new Date().getDay();
+      return day > 0 ? day - 1 : day;
+    }
     return state.stats.dayIndex;
   });
 
