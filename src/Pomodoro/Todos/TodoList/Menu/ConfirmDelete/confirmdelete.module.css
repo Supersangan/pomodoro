@@ -4,6 +4,7 @@
   align-items: center;
   position: relative;
   padding: 25px 85px;
+  color: var(--font-main); 
   background: var(--bg-main);
 }
 
