@@ -24,10 +24,12 @@ import {
 } from './statsData/reducer';
 import {
   timerReducer,
+  TIMER_SET_COUNT,
   TIMER_SET_MODE,
   TIMER_SET_STATUS,
   TIMER_SET_TIME,
   TIMER_SET_WORKING_TIME,
+  TSetTimerCount,
   TSetTimerMode,
   TSetTimerStatus,
   TSetTimerTime,
@@ -63,6 +65,7 @@ export interface ITimer {
   status?: ETimerStatuses;
   time?: number;
   workingTime?: number;
+  count?: number
 }
 
 export interface IStats {
@@ -117,6 +120,7 @@ type TMyActions =
   | TSetTimerStatus
   | TSetTimerTime
   | TSetTimerWorkingTime
+  | TSetTimerCount
   | TIncrementTotalTime
   | TIncrementProductiveTime
   | TIncrementPauseTime
@@ -149,6 +153,7 @@ export const rootReducer: Reducer<TRootState, TMyActions> = (
     case TIMER_SET_STATUS:
     case TIMER_SET_TIME:
     case TIMER_SET_WORKING_TIME:
+    case TIMER_SET_COUNT:
       return {
         ...state,
         timer: timerReducer(state?.timer, action),

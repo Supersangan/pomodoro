@@ -13,6 +13,7 @@ import {
 } from '../../store/todos/reducer';
 import classNames from 'classnames';
 import {
+  actionSetTimerCount,
   actionSetTimerMode,
   actionSetTimerStatus,
   actionSetTimerTime,
@@ -40,31 +41,7 @@ export enum ETimerStatuses {
 }
 
 export function Timer() {
-  const INITIAL_WORK_TIME = 25 * 60;
-  const INITIAL_REST_TIME = 5 * 60;
-
   const dispatch = useDispatch();
-
-  const status = useSelector<TRootState, ETimerStatuses>((state) => {
-    if (!state?.timer?.status) return ETimerStatuses.initial;
-    return state.timer.status;
-  });
-
-  const mode = useSelector<TRootState, ETimerModes>((state) => {
-    if (state?.timer?.mode === undefined) return ETimerModes.work;
-    return state.timer.mode;
-  });
-
-  const time = useSelector<TRootState, number>((state) => {
-    if (state?.timer?.time === undefined)
-      return mode === ETimerModes.work ? INITIAL_WORK_TIME : INITIAL_REST_TIME;
-    return state.timer.time;
-  });
-
-  const workingTime = useSelector<TRootState, number>((state) => {
-    if (state?.timer?.workingTime === undefined) return 0;
-    return state.timer.workingTime;
-  });
 
   function getTodoActualIndex(todos: ITodo[]): number {
     let todoIndex: number = -1;
@@ -100,6 +77,35 @@ export function Timer() {
   const todoDone = useSelector<TRootState, number>((state) => {
     if (!state?.todos) return 0;
     return state.todos[todoIndex]?.done;
+  });
+
+  const timerCount = useSelector<TRootState, number>((state) => {
+    if (!state?.timer?.count) return 0;
+    return state.timer.count;
+  });
+
+  const INITIAL_WORK_TIME = 25 * 60;
+  const INITIAL_REST_TIME = timerCount < 3 ? 5 * 60 : 20 * 60;
+
+  const status = useSelector<TRootState, ETimerStatuses>((state) => {
+    if (!state?.timer?.status) return ETimerStatuses.initial;
+    return state.timer.status;
+  });
+
+  const mode = useSelector<TRootState, ETimerModes>((state) => {
+    if (state?.timer?.mode === undefined) return ETimerModes.work;
+    return state.timer.mode;
+  });
+
+  const time = useSelector<TRootState, number>((state) => {
+    if (state?.timer?.time === undefined)
+      return mode === ETimerModes.work ? INITIAL_WORK_TIME : INITIAL_REST_TIME;
+    return state.timer.time;
+  });
+
+  const workingTime = useSelector<TRootState, number>((state) => {
+    if (state?.timer?.workingTime === undefined) return 0;
+    return state.timer.workingTime;
   });
 
   function incrementTimer() {
@@ -143,6 +149,7 @@ export function Timer() {
 
   function skipTimer() {
     dispatch(actionSetTimerStatus(ETimerStatuses.initial));
+
     dispatch(
       actionSetTimerMode(
         mode === ETimerModes.work ? ETimerModes.rest : ETimerModes.work
@@ -154,6 +161,10 @@ export function Timer() {
         mode === ETimerModes.work ? INITIAL_REST_TIME : INITIAL_WORK_TIME
       )
     );
+
+    if (mode === ETimerModes.rest) {
+      dispatch(actionSetTimerCount(timerCount < 3 ? timerCount + 1 : 0));
+    }
   }
 
   function handleOnDone() {
@@ -210,13 +221,13 @@ export function Timer() {
 
   useEffect(() => {
     if (time === 0) {
+      dispatch(actionSetTimerWorkingTime(0));
+
       dispatch(
         actionSetTimerTime(
           mode === ETimerModes.work ? INITIAL_REST_TIME : INITIAL_WORK_TIME
         )
       );
-
-      dispatch(actionSetTimerWorkingTime(0));
 
       dispatch(
         actionSetTimerMode(
@@ -230,6 +241,10 @@ export function Timer() {
         countPomodoro();
       }
 
+      if (mode === ETimerModes.rest) {
+        dispatch(actionSetTimerCount(timerCount < 3 ? timerCount + 1 : 0));
+      }
+
       sendNotification('Таймер остановлен', {
         body: `Пора ${mode === ETimerModes.work ? 'отдохнуть' : 'поработать'}`,
       });
@@ -238,6 +253,7 @@ export function Timer() {
     time,
     dispatch,
     countPomodoro,
+    timerCount,
     mode,
     INITIAL_WORK_TIME,
     INITIAL_REST_TIME,
