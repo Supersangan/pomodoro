@@ -11,6 +11,7 @@
 
 .select {
   width: 370px;
+  color: var(--font-main);
 }
 
 .selectButton {
@@ -49,6 +50,7 @@
   width: 100%;
   line-height: 17px;
   text-align: left;
+  color: var(--font-main); 
   background-color: var(--gray-f4);
 }
 

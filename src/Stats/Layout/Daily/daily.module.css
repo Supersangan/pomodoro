@@ -1,5 +1,6 @@
 .root {
   padding: 25px;
+  color: var(--font-main);
 }
 
 .heading {
