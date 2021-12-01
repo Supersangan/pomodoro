@@ -68,6 +68,10 @@ export function TodoItem({ todo }: ITodoItemProps) {
   const { setNodeRef, attributes, listeners, transition, transform } =
     useSortable({ id: todo.id });
 
+  function handlePointerDown(event: React.SyntheticEvent): void {
+    event?.stopPropagation();
+  }
+
   const style = {
     transition,
     transform: CSS.Transform.toString(transform),
@@ -78,7 +82,7 @@ export function TodoItem({ todo }: ITodoItemProps) {
       className={styles.root}
       {...attributes}
       {...listeners}
-      style={style} 
+      style={style}
       ref={setNodeRef}
     >
       <button className={styles.button}>
@@ -97,7 +101,7 @@ export function TodoItem({ todo }: ITodoItemProps) {
         )}
       </button>
 
-      <div className={styles.menu}>
+      <div className={styles.menu} onPointerDown={handlePointerDown}>
         <Dropdown
           button={
             <button className={styles.menuButton}>

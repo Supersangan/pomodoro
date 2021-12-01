@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './menu.module.css';
 import { ReactComponent as IconPlus } from './iconPlus.svg';
 import { ReactComponent as IconMinus } from './iconMinus.svg';
 import { ReactComponent as IconRedact } from './iconRedact.svg';
 import { ReactComponent as IconDelete } from './iconDelete.svg';
+import { ShadowModal } from '../../../../ShadowModal';
+import { ConfirmDelete } from './ConfirmDelete';
 
 export interface IMenuProps {
   count: number;
@@ -23,6 +25,8 @@ export function Menu(props: IMenuProps) {
     deleteTodo,
     editTodo = NOOP,
   } = props;
+
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   return (
     <ul className={styles.list}>
@@ -51,10 +55,7 @@ export function Menu(props: IMenuProps) {
       </li>
 
       <li className={styles.li}>
-        <button
-          className={styles.liButton}
-          onClick={editTodo}
-        >
+        <button className={styles.liButton} onClick={editTodo}>
           <IconRedact className={styles.liIcon} />
           Редактировать
         </button>
@@ -63,11 +64,17 @@ export function Menu(props: IMenuProps) {
       <li className={styles.li}>
         <button
           className={styles.liButton}
-          onClick={deleteTodo}
+          onClick={() => setIsConfirmOpen(!isConfirmOpen)}
+          data-not-closer="true"
         >
           <IconDelete className={styles.liIcon} />
           Удалить
         </button>
+        {isConfirmOpen && (
+          <ShadowModal setIsConfirmOpen={setIsConfirmOpen}>
+            <ConfirmDelete deleteTodo={deleteTodo} setIsConfirmOpen={setIsConfirmOpen}/>
+          </ShadowModal>
+        )}
       </li>
     </ul>
   );

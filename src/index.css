@@ -54,8 +54,9 @@
   --gray-c4: #c4c4c4;
   --gray-99: #999;
   --gray-66: #666;
-  --gray-33: #333;
+  --gray-33: #333333;
   --gray-15: #151515;
+  --transparent-shadow: rgba(0, 0, 0, 0.5);
   --bg-main: white;
 }
 
@@ -69,7 +70,7 @@ body {
   font-size: 16px;
   color: var(--font-main-inv);
   background-color: var(--bg-main-inv);
-  transition: background-color .3s ease;
+  transition: background-color 0.3s ease;
 }
 
 a {
@@ -102,4 +103,10 @@ button {
 .button {
   padding: 20px 50px;
   border: none;
+}
+
+.button-link {
+  padding: 0;
+  border: none;
+  background: transparent;
 }
