@@ -69,11 +69,11 @@ export function secondsToStr(
       minutesEnding = 'ут';
 
       if (giventCase) {
-        if (minutes % 10 === 1) minutesEnding = 'ы';
+        if (minutes % 10 === 1) minutesEnding += 'ы';
       } else {
         if (!(minutes % 100 >= 11 && minutes % 100 <= 19)) {
-          if (minutes % 10 === 1) minutesEnding = 'а';
-          if (minutes % 10 >= 2 && minutes % 10 <= 4) minutesEnding = 'ы';
+          if (minutes % 10 === 1) minutesEnding += 'а';
+          if (minutes % 10 >= 2 && minutes % 10 <= 4) minutesEnding += 'ы';
         }
       }
     }
@@ -102,11 +102,11 @@ export function secondsToStr(
       secondsEnding = 'унд';
 
       if (giventCase) {
-        if (seconds % 10 === 1) secondsEnding = 'ы';
+        if (seconds % 10 === 1) secondsEnding += 'ы';
       } else {
         if (!(seconds % 100 >= 11 && seconds % 100 <= 19)) {
-          if (seconds % 10 === 1) secondsEnding = 'а';
-          if (seconds % 10 >= 2 && seconds % 10 <= 4) secondsEnding = 'ы';
+          if (seconds % 10 === 1) secondsEnding += 'а';
+          if (seconds % 10 >= 2 && seconds % 10 <= 4) secondsEnding += 'ы';
         }
       }
     }
