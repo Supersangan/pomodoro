@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './header.module.css';
 import { ReactComponent as IconArrow } from './iconArrow.svg';
-import { Dropdown } from '../../Dropdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { TRootState } from '../../store/reducer';
 import { actionSetWeek } from '../../store/stats/reducer';
@@ -10,6 +9,8 @@ const weeks: string[] = ['Эта неделя', 'Прошедная неделя
 
 export function Header() {
   const dispatch = useDispatch();
+  const [isSelectVisible, setIsSelectVisible] = useState(false);
+  const ref = useRef<HTMLUListElement>(null);
 
   const weekIndex = useSelector<TRootState, number>((state) => {
     if (state?.stats?.weekIndex === undefined) return 0;
@@ -20,21 +21,37 @@ export function Header() {
     dispatch(actionSetWeek(week));
   }
 
+  function handleClick(event: MouseEvent) {
+    if (event.target instanceof Node && ref.current && !ref.current.contains(event.target))
+      setIsSelectVisible(false);
+  }
+
+  useEffect(() => {
+    if (!isSelectVisible) return;
+
+    document.addEventListener('click', handleClick);
+
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, [isSelectVisible]);
+
   return (
     <div className={styles.root}>
       <h2 className={styles.heading}>Ваша активность</h2>
 
       <div className={styles.select}>
-        <Dropdown
-          button={
-            <button
-              className={styles.selectButton + ' ' + styles.selectButton_open}
-            >
-              {weeks[weekIndex]} <IconArrow className={styles.selectIcon} />
-            </button>
-          }
+        <button
+          className={styles.selectButton + ' ' + styles.selectButton_open}
+          onClick={() => {
+            setIsSelectVisible((isSelectVisible) => !isSelectVisible);
+          }}
         >
-          <ul className={styles.selectList}>
+          {weeks[weekIndex]} <IconArrow className={styles.selectIcon} />
+        </button>
+
+        {isSelectVisible && (
+          <ul className={styles.selectList} ref={ref}>
             {weeks.map(
               (week, index) =>
                 index !== weekIndex && (
@@ -51,7 +68,7 @@ export function Header() {
                 )
             )}
           </ul>
-        </Dropdown>
+        )}
       </div>
     </div>
   );

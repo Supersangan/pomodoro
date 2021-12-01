@@ -37,7 +37,7 @@ export function DropdownModal({
   useEffect(() => {
     function handleClick(event: MouseEvent) {   
       if (
-        event.target instanceof Node &&
+        event.target instanceof Node && 
         !ref.current?.contains(event.target)
         && !buttonRef.current?.contains(event.target) 
       ) {

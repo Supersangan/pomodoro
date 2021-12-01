@@ -10,11 +10,14 @@
 }
 
 .select {
+  position: relative;
+  z-index: 1;
   width: 370px;
   color: var(--font-main);
 }
 
 .selectButton {
+  z-index: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -37,6 +40,8 @@
 }
 
 .selectList {
+  position: absolute;
+  width: 100%;
   margin: 0;
   padding: 0;
   list-style: none;

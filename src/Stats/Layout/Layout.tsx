@@ -37,8 +37,6 @@ export function Layout() {
   }
 
   const date = getDate(weekIndex, dayIndex);
-  console.log(date); 
-  
 
   const statsData = useSelector<TRootState, IDayStats[]>((state) => {
     if (state?.statsData === undefined) return [];
