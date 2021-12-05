@@ -17,8 +17,8 @@ export function Header() {
     return state.stats.weekIndex;
   });
 
-  function setWeek(week: number) {
-    dispatch(actionSetWeek(week));
+  function setWeekIndex(index: number) {    
+    dispatch(actionSetWeek(index));
   }
 
   function handleClick(event: MouseEvent) {
@@ -59,7 +59,7 @@ export function Header() {
                     <button
                       className={styles.selectOption}
                       onClick={() => {
-                        setWeek(index);
+                        setWeekIndex(index);
                       }}
                     >
                       {week}

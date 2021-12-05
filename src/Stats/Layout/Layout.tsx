@@ -21,22 +21,23 @@ export function Layout() {
 
   const dayIndex = useSelector<TRootState, number>((state) => {
     if (state?.stats?.dayIndex === undefined) {
-      const day = new Date().getDay();
-      return day > 0 ? day - 1 : day;
+      return new Date().getDay();
     }
     return state.stats.dayIndex;
   });
 
   function getDate(weekIndex: number, dayIndex: number): string {
     const d = new Date();
+    const date = d.getDate();
     const day = d.getDay();
-    const diff = d.getDate() - (day - dayIndex - 1);
-    const weekOffset = 7 * weekIndex    
 
-    return dateToString(new Date(d.setDate(diff - weekOffset)));
+    const dayDiff = dayIndex - day + (day === 0 ? -7 : 0);
+    const weekDiff = - (dayIndex === 0 ? weekIndex - 1: weekIndex) * 7;    
+    
+    return dateToString(new Date(d.setDate(date + dayDiff + weekDiff)));
   }
 
-  const date = getDate(weekIndex, dayIndex);
+  const date = getDate(weekIndex, dayIndex);  
 
   const statsData = useSelector<TRootState, IDayStats[]>((state) => {
     if (state?.statsData === undefined) return [];
@@ -46,8 +47,10 @@ export function Layout() {
   const pomodoros: number = getStatsValue(statsData, date, 'pomodoros') || 0;
   const totalTime: number = getStatsValue(statsData, date, 'totalTime') || 0;
   const pauseTime: number = getStatsValue(statsData, date, 'pauseTime') || 0;
-  const productiveTime: number = getStatsValue(statsData, date, 'productiveTime') || 0;
+  const productiveTime: number =
+    getStatsValue(statsData, date, 'productiveTime') || 0;
   const day: number = new Date(date).getDay();
+  
   const stops: number = getStatsValue(statsData, date, 'stops') || 0;
   const focus: number =
     totalTime > 0 ? Math.floor((productiveTime / totalTime) * 100) : 0;

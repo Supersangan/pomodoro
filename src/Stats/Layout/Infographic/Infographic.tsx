@@ -44,8 +44,7 @@ export function Infographic() {
 
   const dayIndex = useSelector<TRootState, number>((state) => {
     if (state?.stats?.dayIndex === undefined) {
-      const day = new Date().getDay();
-      return day > 0 ? day - 1 : day;
+      return new Date().getDay();
     }
     return state.stats.dayIndex;
   });
@@ -94,6 +93,7 @@ export function Infographic() {
   useEffect(() => {
     let maxTime = 15;
 
+    
     for (const date of weekDates) {
       for (const dayData of statsData) {
         if (dayData.date === dateToString(date)) {
@@ -131,6 +131,7 @@ export function Infographic() {
     setTimeRatio(newTimeRatio);
     setMaxTime(newMaxTime);
     setLinesCount(newLinesCount);
+    
   }, [maxTime, timeRatio, getTimeRatio]);
 
   function setDayIndex(dayIndex: number): void {
@@ -168,14 +169,15 @@ export function Infographic() {
               <div
                 className={classNames(
                   styles.columnValue,
-                  index === dayIndex && styles.columnValue_active,
+                  index === (dayIndex > 0 ? dayIndex - 1 : 6) &&
+                    styles.columnValue_active,
                   day.percentage === 0 && styles.columnValue_zero
                 )}
                 style={{
                   height: day.percentage > 0 ? `${day.percentage}%` : '',
                 }}
                 onClick={() => {
-                  setDayIndex(index);
+                  setDayIndex(index < 6 ? index + 1 : 0);
                 }}
               ></div>
             </div>
@@ -189,7 +191,8 @@ export function Infographic() {
             <div
               className={classNames(
                 styles.column,
-                index === dayIndex && styles.column_active
+                index === (dayIndex > 0 ? dayIndex - 1 : 6) &&
+                  styles.column_active
               )}
               key={dayNames[index]}
             >
